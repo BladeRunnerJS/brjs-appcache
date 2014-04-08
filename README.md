@@ -44,6 +44,8 @@ If you are using either Eclipse or InteliJ IDEA for development, follow the inst
     - The manifest will be given a new version every time you generate the prod files
     - The manifest can be given a specific version by specifying an appcache version in the config file. See the [Configuration](#configuration) section for details on how to do this.
 
+> The  HTML `<base href=".." />` tag is incompatible with the appcache plugin. BRJS applications by default are created with the base tag in use, so *this will need to be removed before the appcache plugin will work*. This is OK - the use of the base tag was added by bladerunner to replicate some of the appcache functionality, but now we're using the real thing we don't need it any more!
+
 <a name="configuration"></a>
 ### Configuration
 - Appcache is configured at an aspect level, as different aspects will use different appcaches.
