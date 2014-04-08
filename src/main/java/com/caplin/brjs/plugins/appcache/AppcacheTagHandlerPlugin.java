@@ -1,4 +1,4 @@
-package com.caplin.brjs.plugins;
+package com.caplin.brjs.plugins.appcache;
 
 import java.io.IOException;
 import java.io.Writer;

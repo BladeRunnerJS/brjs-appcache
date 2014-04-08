@@ -1,4 +1,4 @@
-package com.caplin.brjs.plugins;
+package com.caplin.brjs.plugins.appcache;
 
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.ConfigValidationChecker;
