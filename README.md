@@ -16,12 +16,13 @@ The plugin automatically generates a manifest file listing the files to cache at
     `brjsPath=C:/development/brjs`
 
 ### Using Eclipse or IntelliJ IDEA 
-- If you are using either Eclipse or InteliJ IDEA for development set up your project files.
-  - run `./gradlew eclipse` or `./gradle idea`.
-  - For Eclipse the brjs-core source and JavaDocs will also be attached, for InteliJ this must be done manually. The src jar can be found in `<brjs-dir>/docs/src/`.
+If you are using either Eclipse or InteliJ IDEA for development, follow the instructions below to set up your project files
+
+- run `./gradlew eclipse` or `./gradle idea`.
+    - For Eclipse the brjs-core source and JavaDocs will also be attached, for InteliJ this must be done manually. The src jar can be found in `<brjs-dir>/docs/src/`.
 - Import the created project in to your IDE of choice.
-  - This is generally done by selecting 'Import existing project'.
-  - Once the project is imported the relevant dependencies should be added to the classpath for you.
+    - This is generally done by selecting 'Import existing project'.
+    - Once the project is imported the relevant dependencies should be added to the classpath for you.
  
 ### Build the plugin
 - Run `./gradlew build` to build and test your plugin.
@@ -35,7 +36,7 @@ The plugin automatically generates a manifest file listing the files to cache at
 > This is a requirement of BRJS v0.6, in the future the plugin deployment process may change.
 
 ### Enabling
--  To link it in to your application the plugin provides the `appcache.url` tag handler. This tag will replaced with the URL to the manifest file, so you should set the `manifest` attribute on the `html` tag to use the tag as its value. 
+- To link it in to your application the plugin provides the `appcache.url` tag handler. This tag will replaced with the URL to the manifest file, so you should set the `manifest` attribute on the `html` tag to use the tag as its value. 
     - In other words your html tag should look something like `<html manifest="<@appcache.url @/>">`
 - In dev, the manifest URL is blank by default so the appcache will not be used.
     - You can test the appcache in dev by manually specifying an appcache version in the config file. See the [Configuration](#configuration) section for details on how to do this.
