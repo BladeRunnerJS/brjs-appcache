@@ -36,8 +36,8 @@ If you are using either Eclipse or InteliJ IDEA for development, follow the inst
 > This is a requirement of BRJS v0.6, in the future the plugin deployment process may change.
 
 ### Enabling
-- To link it in to your application the plugin provides the `appcache.url` tag handler. This tag will replaced with the URL to the manifest file, so you should set the `manifest` attribute on the `html` tag to use the tag as its value. 
-    - In other words your html tag should look something like `<html manifest="<@appcache.url @/>">`
+- To link it in to your application the plugin provides the `appcache.url` tag handler. This tag will replaced with the URL to the manifest file, so you should set the `manifest` attribute on the `html` element to use the tag as its value. 
+    - In other words your html element should look something like `<html manifest="<@appcache.url @/>">`
 - In dev, the manifest URL is blank by default so the appcache will not be used.
     - You can test the appcache in dev by manually specifying an appcache version in the config file. See the [Configuration](#configuration) section for details on how to do this.
 - In prod, the manifest URL is always generated and points to a valid manifest.
