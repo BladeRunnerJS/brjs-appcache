@@ -47,4 +47,4 @@ The plugin automatically generates a manifest file listing the files to cache at
 ### Configuration
 - Appcache is configured at an aspect level, as different aspects will use different appcaches.
 - A config file named `appcache.conf` is looked for in the aspect folder. It supports the following properties:
-    - version: A specific version to use for the appcache manifest in dev or prod.
+    - `version` a specific version to use for the appcache manifest in dev or prod.
