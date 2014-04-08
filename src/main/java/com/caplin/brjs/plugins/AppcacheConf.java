@@ -14,7 +14,12 @@ public class AppcacheConf extends ConfFile<YamlAppcacheConf>
 
 	public String getVersion()
 	{
-		return conf.version;
+		String version = conf.version;
+		if(version != null && version.trim().isEmpty())
+		{
+			version = null;
+		}
+		return version;
 	}
 
 }

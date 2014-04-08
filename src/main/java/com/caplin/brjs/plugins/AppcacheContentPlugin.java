@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.PropertiesException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.ContentPlugin;
@@ -62,11 +64,11 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 
 		try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 		{
-			writeHeader(writer, bundleSet);
-			writeCacheFiles(writer, bundleSet);
-			writeNetwork(writer);
+			writeManifestHeader(writer, bundleSet);
+			writeManifestCacheFiles(writer, bundleSet);
+			writeManifestNetworkFiles(writer);
 		}
-		catch (IOException | ConfigException e)
+		catch (IOException | ConfigException | PropertiesException e)
 		{
 			throw new ContentProcessingException(e);
 		}
@@ -122,19 +124,13 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 		this.brjs = brjs;
 	}
 
-	private void writeHeader(Writer writer, BundleSet bundleSet) throws IOException, ConfigException
+	private void writeManifestHeader(Writer writer, BundleSet bundleSet) throws IOException, ConfigException, PropertiesException
 	{
-		AppcacheConf conf = new AppcacheConf(bundleSet.getBundlableNode());
-		String version = conf.getVersion();
-		if (version == null || version.trim().isEmpty())
-		{
-			version = Long.toString(System.currentTimeMillis());
-		}
-
+		String version = getManifestVersion(bundleSet.getBundlableNode());
 		writer.write("CACHE MANIFEST\n# v" + version + "\n\n");
 	}
 
-	private void writeCacheFiles(Writer writer, BundleSet bundleSet) throws IOException, ContentProcessingException
+	private void writeManifestCacheFiles(Writer writer, BundleSet bundleSet) throws IOException, ContentProcessingException
 	{
 		writer.write("CACHE:\n");
 
@@ -158,9 +154,29 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 		writer.write("\n");
 	}
 
-	private void writeNetwork(Writer writer) throws IOException
+	private void writeManifestNetworkFiles(Writer writer) throws IOException
 	{
 		writer.write("\nNETWORK:\n*");
+	}
+	
+	private String getManifestVersion(BRJSNode node) throws ConfigException, PropertiesException
+	{
+		// Tries to get the version from:
+		// 1) The config file
+		// 2) The node properties
+		// 3) Empty string fallback
+		AppcacheConf conf = new AppcacheConf(node);
+		String version = conf.getVersion();
+		if (version == null || version.trim().isEmpty())
+		{
+			version = node.nodeProperties("appcache").getPersisentProperty("version");
+		}
+		if (version == null)
+		{
+			version = "";
+		}
+		
+		return version;
 	}
 
 }
