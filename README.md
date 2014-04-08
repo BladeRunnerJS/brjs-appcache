@@ -43,6 +43,7 @@ The plugin automatically generates a manifest file listing the files to cache at
     - The manifest will be given a new version every time you generate the prod files
     - The manifest can be given a specific version by specifying an appcache version in the config file. See the [Configuration](#configuration) section for details on how to do this.
 
+<a name="configuration"></a>
 ### Configuration
 - Appcache is configured at an aspect level, as different aspects will use different appcaches.
 - A config file named `appcache.conf` is looked for in the aspect folder. It supports the following properties:
