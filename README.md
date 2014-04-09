@@ -6,8 +6,8 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
 - Download the [latest build of the plugin](lib/appcache-plugin.jar) (`lib/appcache-plugin.jar`).
 - Copy the plugin JAR to the `apps/<your-app>/WEB-INF/lib` folder.
 - Add the appcache plugin tag to your HTML element e.g. `<html manifest="<@appcache.url@/>">`
-- `brjs war <your-app>`
-- Deploy and see the appcache in action!
+
+That's it, your app is now appcache ready! Remember it's disabled in dev by default, so you'll either need to [enable it in dev](#enableInDev) or deploy your app as a WAR to see the appcache in action.
 
 ## Usage
 
@@ -18,6 +18,7 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
 ### Enabling
 - To link it in to your application the plugin provides the `appcache.url` tag handler. This tag will replaced with the URL to the manifest file, so you should set the `manifest` attribute on the `html` element to use the tag as its value. 
     - In other words your html element should look something like `<html manifest="<@appcache.url@/>">`
+<a name="enableInDev"></a>
 - In dev, the manifest URL is blank by default so the appcache will not be used.
     - You can test the appcache in dev by manually specifying an appcache version in the config file. See the [Configuration](#configuration) section for details on how to do this.
 - In prod, the manifest URL is always generated and points to a valid manifest.
@@ -29,7 +30,7 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
 <a name="configuration"></a>
 ### Configuration
 - Appcache is configured at an aspect level, as different aspects will use different appcaches.
-- A config file named `appcache.conf` is looked for in the aspect folder. It supports the following properties in YAML format:
+- A config file named `appcache.conf` is looked for in the `<aspect>/conf` folder. It supports the following properties in YAML format:
     - `version` a specific version to use for the appcache manifest in dev or prod.
     - `languages` a comma separated list of valid [HTTP language tags](http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.10). If no languages are supplied, "en" files will be cached by default.
 
