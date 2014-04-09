@@ -64,8 +64,9 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 
 		try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 		{
+			boolean isDev = contentPath.formName.equals("dev-appcache-request");
 			writeManifestHeader(writer, bundleSet);
-			writeManifestCacheFiles(writer, bundleSet);
+			writeManifestCacheFiles(writer, bundleSet, isDev);
 			writeManifestNetworkFiles(writer);
 		}
 		catch (IOException | ConfigException | PropertiesException e)
@@ -130,7 +131,7 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 		writer.write("CACHE MANIFEST\n# v" + version + "\n\n");
 	}
 
-	private void writeManifestCacheFiles(Writer writer, BundleSet bundleSet) throws IOException, ContentProcessingException
+	private void writeManifestCacheFiles(Writer writer, BundleSet bundleSet, boolean isDev) throws IOException, ContentProcessingException
 	{
 		writer.write("CACHE:\n");
 
@@ -143,7 +144,7 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 				continue;
 			}
 
-			for (String path : plugin.getValidDevContentPaths(bundleSet))
+			for (String path : getContentPaths(plugin, bundleSet, isDev))
 			{
 				// Path begins with .. as paths are relative to the manifest file,
 				// and the manifest is in the "appcache/" directory
@@ -158,7 +159,7 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 	{
 		writer.write("\nNETWORK:\n*");
 	}
-	
+
 	private String getManifestVersion(BRJSNode node) throws ConfigException, PropertiesException
 	{
 		// Tries to get the version from:
@@ -175,8 +176,22 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 		{
 			version = "";
 		}
-		
+
 		return version;
+	}
+
+	private List<String> getContentPaths(ContentPlugin plugin, BundleSet bundleSet, boolean isDev) throws ContentProcessingException
+	{
+		List<String> contentPaths;
+		if (isDev)
+		{
+			contentPaths = plugin.getValidDevContentPaths(bundleSet);
+		}
+		else
+		{
+			contentPaths = plugin.getValidProdContentPaths(bundleSet);
+		}
+		return contentPaths;
 	}
 
 }
