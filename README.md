@@ -37,7 +37,7 @@ If you are using either Eclipse or InteliJ IDEA for development, follow the inst
 
 ### Enabling
 - To link it in to your application the plugin provides the `appcache.url` tag handler. This tag will replaced with the URL to the manifest file, so you should set the `manifest` attribute on the `html` element to use the tag as its value. 
-    - In other words your html element should look something like `<html manifest="<@appcache.url @/>">`
+    - In other words your html element should look something like `<html manifest="<@appcache.url@/>">`
 - In dev, the manifest URL is blank by default so the appcache will not be used.
     - You can test the appcache in dev by manually specifying an appcache version in the config file. See the [Configuration](#configuration) section for details on how to do this.
 - In prod, the manifest URL is always generated and points to a valid manifest.
@@ -51,3 +51,5 @@ If you are using either Eclipse or InteliJ IDEA for development, follow the inst
 - Appcache is configured at an aspect level, as different aspects will use different appcaches.
 - A config file named `appcache.conf` is looked for in the aspect folder. It supports the following properties in YAML format:
     - `version` a specific version to use for the appcache manifest in dev or prod.
+
+> The config file must either have a valid property name in it or be removed. Invalid property names or empty config files will produce errors in BRJS. The property value however can is permitted to be blank.
