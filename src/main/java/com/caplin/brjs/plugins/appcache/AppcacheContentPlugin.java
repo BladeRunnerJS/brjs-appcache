@@ -185,11 +185,11 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 		List<String> contentPaths;
 		if (isDev)
 		{
-			contentPaths = plugin.getValidDevContentPaths(bundleSet);
+			contentPaths = plugin.getValidDevContentPaths(bundleSet, "en");
 		}
 		else
 		{
-			contentPaths = plugin.getValidProdContentPaths(bundleSet);
+			contentPaths = plugin.getValidProdContentPaths(bundleSet, "en");
 		}
 		return contentPaths;
 	}

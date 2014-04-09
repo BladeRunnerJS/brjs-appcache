@@ -53,3 +53,6 @@ If you are using either Eclipse or InteliJ IDEA for development, follow the inst
     - `version` a specific version to use for the appcache manifest in dev or prod.
 
 > The config file must either have a valid property name in it or be removed. Invalid property names or empty config files will produce errors in BRJS. The property value however can is permitted to be blank.
+
+### Issues
+- The plugin currently only fully supports EN (English) browsers; this is due to a limitation in the way BRJS handles internationalisation. Non EN browsers will only be partially stored in the appcache; some files will still be retrieved from the network. This will be fixed in the future when BRJS adds flat file export.
