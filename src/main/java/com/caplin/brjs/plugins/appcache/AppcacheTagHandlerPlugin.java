@@ -15,6 +15,9 @@ import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 
+/**
+ * Generates an appcache manifest URL when the "appcache.url" tag is used.
+ */
 public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 {
 
