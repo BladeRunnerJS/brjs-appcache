@@ -6,6 +6,7 @@ apply plugin: 'java'
 
 dependencies {
 	compile fileTree(dir:brjsPath, include:"sdk/libs/java/system/*.jar")
+	testCompile fileTree(dir:"${projectDir}/libs", include:"*.jar")
 }
 
 task copyToConf, type: Copy, dependsOn: jar, {
