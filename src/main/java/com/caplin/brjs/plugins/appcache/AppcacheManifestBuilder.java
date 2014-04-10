@@ -30,7 +30,8 @@ public class AppcacheManifestBuilder
 	}
 
 	/**
-	 * Creates an {@link AppcacheManifestBuilder} instance for generating prod or dev manifest files, depending on the value of the isDev parameter.
+	 * Creates an {@link AppcacheManifestBuilder} instance for generating prod or dev manifest
+	 * files, depending on the value of the isDev parameter.
 	 */
 	public AppcacheManifestBuilder(BRJS brjs, BundleSet bundleSet, AppcacheConf config, boolean isDev)
 	{
@@ -46,7 +47,7 @@ public class AppcacheManifestBuilder
 	 * @return The manifest file
 	 * @throws PropertiesException
 	 * @throws ContentProcessingException
-	 * @throws ConfigException 
+	 * @throws ConfigException
 	 */
 	public String getManifest() throws PropertiesException, ContentProcessingException, ConfigException
 	{
@@ -62,9 +63,6 @@ public class AppcacheManifestBuilder
 	 * 
 	 **************************************/
 
-	/**
-	 * Generates the manifest file header
-	 */
 	private String getManifestHeader() throws PropertiesException
 	{
 		String version = getManifestVersion();
@@ -72,7 +70,10 @@ public class AppcacheManifestBuilder
 	}
 
 	/**
-	 * Generates a version number to use for the manifest. The version is generated from either: 1) The config file 2) The node properties 3) Empty string fallback
+	 * Generates a version number to use for the manifest. The version is generated from either:
+	 * 1) The config file
+	 * 2) The node properties
+	 * 3) Empty string fallback
 	 */
 	private String getManifestVersion() throws PropertiesException
 	{
@@ -89,10 +90,6 @@ public class AppcacheManifestBuilder
 		return version;
 	}
 
-	/**
-	 * Generates the "CACHE" part of the manifest file
-	 * @throws ConfigException 
-	 */
 	private String getManifestCacheFiles() throws ContentProcessingException, ConfigException
 	{
 		StringBuilder cacheFiles = new StringBuilder();
@@ -102,19 +99,8 @@ public class AppcacheManifestBuilder
 		String[] languages = getConfiguredLocales();
 		for (ContentPlugin plugin : brjs.plugins().contentProviders())
 		{
-			// Do not specify the manifest itself in the cache manifest file, otherwise it
-			// will be nearly impossible to inform the browser a new manifest is available
-			if (plugin.instanceOf(AppcacheContentPlugin.class))
-			{
-				continue;
-			}
-
-			for (String path : getContentPaths(plugin, languages))
-			{
-				// Path begins with .. as paths are relative to the manifest file,
-				// and the manifest is in the "appcache/" directory
-				cacheFiles.append("../" + path + "\n");
-			}
+			String pluginCacheFiles = getManifestCacheFilesForPlugin(plugin, languages);
+			cacheFiles.append(pluginCacheFiles);
 		}
 
 		cacheFiles.append("\n");
@@ -122,10 +108,28 @@ public class AppcacheManifestBuilder
 		return cacheFiles.toString();
 	}
 
+	private String getManifestCacheFilesForPlugin(ContentPlugin plugin, String[] languages) throws ContentProcessingException
+	{
+		// Do not specify the manifest itself in the cache manifest file, otherwise it
+		// will be nearly impossible to inform the browser a new manifest is available
+		if (plugin.instanceOf(AppcacheContentPlugin.class))
+		{
+			return "";
+		}
+
+		StringBuilder cacheFiles = new StringBuilder();
+		for (String path : getContentPaths(plugin, languages))
+		{
+			// Path begins with .. as paths are relative to the manifest file,
+			// and the manifest is in the "appcache/" directory
+			cacheFiles.append("../" + path + "\n");
+		}
+		return cacheFiles.toString();
+	}
+
 	/**
-	 * Gets the list of configured languages from the config file. If none are configured a default of "en" will be used
-	 * 
-	 * @throws ConfigException
+	 * Gets the list of configured languages from the config file. If none are configured a default
+	 * of "en" will be used
 	 */
 	private String[] getConfiguredLocales() throws ConfigException
 	{
@@ -152,12 +156,16 @@ public class AppcacheManifestBuilder
 	 */
 	private List<String> getContentPaths(ContentPlugin plugin, String[] languages) throws ContentProcessingException
 	{
-		// TODO Any language-specific files requested by browsers set to a language not in the locale list
-		// will not appear in the appcache manifest, and will not be cached. The application will still work,
+		// TODO Any language-specific files requested by browsers set to a language not in the
+		// locale list
+		// will not appear in the appcache manifest, and will not be cached. The application will
+		// still work,
 		// it's just that some files will have to be requested over the network every time.
-		// This should be fixable when flat-file export is added to BRJS, as the mechanism with which language
+		// This should be fixable when flat-file export is added to BRJS, as the mechanism with
+		// which language
 		// specific files are generated will have changed.
-		// In the meantime we let the developer specify required languages in the appcache.conf file, or assume
+		// In the meantime we let the developer specify required languages in the appcache.conf
+		// file, or assume
 		// "en" as a default if none are provided.
 
 		List<String> contentPaths;

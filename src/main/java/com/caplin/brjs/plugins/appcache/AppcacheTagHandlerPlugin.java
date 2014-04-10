@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BRJSNode;
+import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.PropertiesException;
@@ -67,7 +68,8 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 	{
 		try
 		{
-			storeVersionToNodeProperties(bundleSet.getBundlableNode());
+			String version = getConfiguredVersion(bundleSet.getBundlableNode());
+			storeVersionToNodeProperties(version, bundleSet.getBundlableNode());
 			writer.write(contentPathParser.createRequest("prod-appcache-request"));
 		}
 		catch (MalformedTokenException | ConfigException | PropertiesException e)
@@ -119,9 +121,8 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 	 * @throws PropertiesException
 	 *             If the version could not be saved to the properties store
 	 */
-	private void storeVersionToNodeProperties(BRJSNode node) throws ConfigException, PropertiesException
+	private void storeVersionToNodeProperties(String version, BundlableNode node) throws ConfigException, PropertiesException
 	{
-		String version = getConfiguredVersion(node);
 		if (version == null)
 		{
 			version = Long.toString(System.currentTimeMillis());
