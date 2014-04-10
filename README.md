@@ -14,6 +14,7 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
 
 ### Installation
 - Copy the plugin JAR to the `apps/<your-app>/WEB-INF/lib` folder for any apps you want to use the plugin.
+
 > This is a requirement of BRJS v0.6, in the future the plugin deployment process may change.
 
 ### Enabling
