@@ -26,7 +26,7 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
     - The manifest will be given a new version every time you generate the prod files.
     - The manifest can be given a specific version by specifying an appcache version in the config file. See the [Configuration](#configuration) section for details on how to do this.
 
-> The  HTML `<base href=".." />` tag is incompatible with the appcache plugin. BRJS applications by default are created with the base tag in use, so *this will need to be removed before the appcache plugin will work*. This is OK - the use of the base tag was added by bladerunner to replicate some of the appcache functionality, but now we're using the real thing we don't need it any more!
+> The HTML `<base href="..." />` tag is incompatible with the appcache plugin. BRJS applications by default are created with the base tag in `index.html`, so *this will need to be removed before the appcache plugin will work*. This is OK - the use of the base tag was added by bladerunner to replicate some of the appcache functionality, but now you're using the real thing you don't need it any more!
 
 <a name="configuration"></a>
 ### Configuration
@@ -37,9 +37,6 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
     > The config file must either have a valid property name in it or be removed. Invalid property names or empty config files will produce errors in BRJS. The property *value* however can be blank.
 
 - Only files for the listed locales are cached. The locales configuration is standard BRJS functionality, and can be found in the `<app>/app.conf` file.
-
-### Issues
-- BRJS supports loading of different files (e.g. CSS, JS, i18n) for different languages. The appcache plugin does support caching of these language files, but the list of languages you wish to cache must currently be supplied up front in the [configuration](#configuration). In a future BRJS release this will no longer be necessary and the list of languages will be generated for you.
 
 ## Development
 
