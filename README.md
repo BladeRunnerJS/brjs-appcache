@@ -43,8 +43,9 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
 ### Clone the repo and create your project
 - Clone this repository.
 - Configure the path to your BladeRunnerJS directory in `./gradle.properties` e.g.
-
-    `brjsPath=C:/development/brjs`
+```
+brjsPath=C:/development/brjs
+```
 
 ### Using Eclipse or IntelliJ IDEA 
 If you are using either Eclipse or IntelliJ IDEA for development, follow the instructions below to set up your project files
