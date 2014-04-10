@@ -31,11 +31,12 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
 <a name="configuration"></a>
 ### Configuration
 - Appcache is configured at an aspect level, as different aspects will use different appcaches.
-- A config file named `appcache.conf` is looked for in the `<aspect>/conf` folder. It supports the following properties in YAML format:
+- A config file named `appcache.conf` is looked for in the `<aspect>/conf` folder. It supports the following properties in [YAML format](http://en.wikipedia.org/wiki/YAML#Examples):
     - `version` a specific version to use for the appcache manifest in dev or prod.
-    - `languages` a comma separated list of valid [HTTP language tags](http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.10). If no languages are supplied, "en" files will be cached by default.
 
-> The config file must either have a valid property name in it or be removed. Invalid property names or empty config files will produce errors in BRJS. The property *value* however can be blank.
+    > The config file must either have a valid property name in it or be removed. Invalid property names or empty config files will produce errors in BRJS. The property *value* however can be blank.
+
+- Only files for the listed locales are cached. The locales configuration is standard BRJS functionality, and can be found in the `<app>/app.conf` file.
 
 ### Issues
 - BRJS supports loading of different files (e.g. CSS, JS, i18n) for different languages. The appcache plugin does support caching of these language files, but the list of languages you wish to cache must currently be supplied up front in the [configuration](#configuration). In a future BRJS release this will no longer be necessary and the list of languages will be generated for you.
