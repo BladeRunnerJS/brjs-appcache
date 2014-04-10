@@ -38,13 +38,15 @@ task copyToApps, type: Copy, dependsOn: jar, {
 task copyToBrjs, dependsOn: [copyToConf, copyToApps], {
 }
 
-task copyToLib, type: Copy, dependsOn: jar, {
-	def latestBuildDir = new File("${projectDir}/lib")
-	from jar.outputs.files.singleFile
-	into latestBuildDir
-	doLast {
-		println "${project.name} jar copied to ${latestBuildDir.getAbsolutePath()}"
+// automatically update the latest JAR when the build passes
+tasks.build.doLast {
+	def latestBuildDir = new File("${projectDir}")
+	copy {
+		from jar.outputs.files.singleFile
+		into latestBuildDir
+		
 	}
+	println "Copied latest ${project.name}.jar into ${latestBuildDir}"
 }
 
 // automatically add brjs-core sources jar for Eclipse classpath
