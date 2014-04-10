@@ -8,13 +8,11 @@ public class YamlAppcacheConf extends AbstractYamlConfFile
 {
 
 	public String version;
-	public String languages;
 
 	@Override
 	public void initialize()
 	{
 		version = null;
-		languages = null;
 	}
 
 	@Override

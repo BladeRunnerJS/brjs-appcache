@@ -1,9 +1,12 @@
 package com.caplin.brjs.plugins.appcache;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.PropertiesException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.ContentPlugin;
@@ -27,8 +30,7 @@ public class AppcacheManifestBuilder
 	}
 
 	/**
-	 * Creates an {@link AppcacheManifestBuilder} instance for generating prod or dev manifest files,
-	 * depending on the value of the isDev parameter.
+	 * Creates an {@link AppcacheManifestBuilder} instance for generating prod or dev manifest files, depending on the value of the isDev parameter.
 	 */
 	public AppcacheManifestBuilder(BRJS brjs, BundleSet bundleSet, AppcacheConf config, boolean isDev)
 	{
@@ -40,11 +42,13 @@ public class AppcacheManifestBuilder
 
 	/**
 	 * Generates the manifest file as a string.
+	 * 
 	 * @return The manifest file
 	 * @throws PropertiesException
 	 * @throws ContentProcessingException
+	 * @throws ConfigException 
 	 */
-	public String getManifest() throws PropertiesException, ContentProcessingException
+	public String getManifest() throws PropertiesException, ContentProcessingException, ConfigException
 	{
 		String manifest = getManifestHeader();
 		manifest += getManifestCacheFiles();
@@ -68,10 +72,7 @@ public class AppcacheManifestBuilder
 	}
 
 	/**
-	 * Generates a version number to use for the manifest. The version is generated from either:
-	 * 1) The config file
- 	 * 2) The node properties
-	 * 3) Empty string fallback
+	 * Generates a version number to use for the manifest. The version is generated from either: 1) The config file 2) The node properties 3) Empty string fallback
 	 */
 	private String getManifestVersion() throws PropertiesException
 	{
@@ -90,14 +91,15 @@ public class AppcacheManifestBuilder
 
 	/**
 	 * Generates the "CACHE" part of the manifest file
+	 * @throws ConfigException 
 	 */
-	private String getManifestCacheFiles() throws ContentProcessingException
+	private String getManifestCacheFiles() throws ContentProcessingException, ConfigException
 	{
 		StringBuilder cacheFiles = new StringBuilder();
 		cacheFiles.append("CACHE:\n");
 
 		// See #getContentPaths for an explanation on why we need configured languages
-		String[] languages = getConfiguredLanguages();
+		String[] languages = getConfiguredLocales();
 		for (ContentPlugin plugin : brjs.plugins().contentProviders())
 		{
 			// Do not specify the manifest itself in the cache manifest file, otherwise it
@@ -121,17 +123,28 @@ public class AppcacheManifestBuilder
 	}
 
 	/**
-	 * Gets the list of configured languages from the config file.
-	 * If none are configured a default of "en" will be used
+	 * Gets the list of configured languages from the config file. If none are configured a default of "en" will be used
+	 * 
+	 * @throws ConfigException
 	 */
-	private String[] getConfiguredLanguages()
+	private String[] getConfiguredLocales() throws ConfigException
 	{
-		String[] languages = config.getLanguages();
-		if (languages.length == 0)
+		String localeConfig = bundleSet.getBundlableNode().app().appConf().getLocales();
+		List<String> splitLocales = new ArrayList<String>(Arrays.asList(localeConfig.split(",")));
+		int i = 0;
+		for (String language : splitLocales)
 		{
-			languages = new String[] { "en" };
+			splitLocales.set(i, language.trim());
+			++i;
 		}
-		return languages;
+		splitLocales.removeAll(Arrays.asList(""));
+
+		if (splitLocales.size() == 0)
+		{
+			splitLocales.add("en");
+		}
+
+		return splitLocales.toArray(new String[splitLocales.size()]);
 	}
 
 	/**
@@ -164,6 +177,6 @@ public class AppcacheManifestBuilder
 	 */
 	private String getManifestNetworkFiles()
 	{
-		return "\nNETWORK:\n*";
+		return "NETWORK:\n*";
 	}
 }
