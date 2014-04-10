@@ -3,7 +3,7 @@
 A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_the_application_cache) support in [BRJS applications](http://bladerunnerjs.org/). The plugin automatically generates a manifest file listing the files to cache at a specific URL, so you don't need to manage it yourself.
 
 ## Quick start
-- Download the [latest build of the plugin](lib/appcache-plugin.jar?raw=true) (`lib/appcache-plugin.jar`).
+- Download the [latest build of the plugin](appcache-plugin.jar?raw=true) (`appcache-plugin.jar`).
 - Copy the plugin JAR to the `apps/<your-app>/WEB-INF/lib` folder.
 - Add the appcache plugin tag to your HTML element e.g. `<html manifest="<@appcache.url@/>">`
 - That's it, your app is now appcache ready!
