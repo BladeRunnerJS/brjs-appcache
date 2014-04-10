@@ -3,7 +3,7 @@
 A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_the_application_cache) support in BRJS applications. The plugin automatically generates a manifest file listing the files to cache at a specific URL, so you don't need to manage it yourself.
 
 ## Quick start
-- Download the [latest build of the plugin](lib/appcache-plugin.jar) (`lib/appcache-plugin.jar`).
+- Download the [latest build of the plugin](lib/appcache-plugin.jar?raw=true) (`lib/appcache-plugin.jar`).
 - Copy the plugin JAR to the `apps/<your-app>/WEB-INF/lib` folder.
 - Add the appcache plugin tag to your HTML element e.g. `<html manifest="<@appcache.url@/>">`
 - That's it, your app is now appcache ready!
@@ -19,8 +19,7 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
 ### Enabling
 - To link it in to your application the plugin provides the `appcache.url` tag handler. This tag will replaced with the URL to the manifest file, so you should set the `manifest` attribute on the `html` element to use the tag as its value. 
     - In other words your html element should look something like `<html manifest="<@appcache.url@/>">`
-<a name="enableInDev"></a>
-- In dev, the manifest URL is blank by default so the appcache will not be used.
+- <a name="enableInDev"></a>In dev, the manifest URL is blank by default so the appcache will not be used.
     - You can test the appcache in dev by manually specifying an appcache version in the config file. See the [Configuration](#configuration) section for details on how to do this.
 - In prod, the manifest URL is always generated and points to a valid manifest.
     - The manifest will be given a new version every time you generate the prod files.
