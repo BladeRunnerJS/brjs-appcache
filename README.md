@@ -36,7 +36,7 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
 
     > The config file must either have a valid property name in it or be removed. Invalid property names or empty config files will produce errors in BRJS. The property *value* however can be blank.
 
-- Only files for the listed locales are cached. The locales configuration is standard BRJS functionality, and can be found in the `<app>/app.conf` file.
+- Only files for the listed locales are cached. The locales configuration is standard BRJS functionality, and can be found in the `<your-app>/app.conf` file.
 
 ## Development
 
