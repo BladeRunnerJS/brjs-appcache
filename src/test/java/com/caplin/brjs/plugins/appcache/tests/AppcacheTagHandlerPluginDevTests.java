@@ -30,7 +30,7 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 	}
 
 	@Test
-	public void appcacheUrlTagIsEmpty() throws Exception
+	public void tagIsEmptyWithNoConfigFile() throws Exception
 	{
 		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'");
 
@@ -53,7 +53,7 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 //	}
 
 	@Test
-	public void appcacheUrlTagIsEmptyWithBlankVersionGiven() throws Exception
+	public void tagIsEmptyWithBlankVersionGiven() throws Exception
 	{
 		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
 			.and(aspect).containsFileWithContents("conf/appcache.conf", "version: ");
@@ -64,7 +64,7 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 	}
 
 	@Test
-	public void appcacheUrlTagHasContentWithVersionGiven() throws Exception
+	public void tagHasContentWithVersionGiven() throws Exception
 	{
 		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
 			.and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
@@ -75,7 +75,7 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 	}
 	
 	@Test
-	public void appcacheUrlTagHas404FileWhenVersionRemovedAfterPreviouslyHavingVersion() throws Exception
+	public void tagHas404FileWhenVersionRemovedAfterPreviouslyHavingVersion() throws Exception
 	{
 		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
 			.and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
@@ -89,15 +89,15 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 	}
 	
 	@Test
-	public void appcacheUrlTagIsBlankAfterHaving404() throws Exception
+	public void tagIsBlankAfterHaving404() throws Exception
 	{
 		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
 			.and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
 
-		StringBuffer firstResponses = new StringBuffer();
-		when(aspect).indexPageLoadedInDev(firstResponses, "en")
+		StringBuffer firstTwoResponses = new StringBuffer();
+		when(aspect).indexPageLoadedInDev(firstTwoResponses, "en")
 			.and(aspect).containsFileWithContents("conf/appcache.conf", "version: ")
-			.and(aspect).indexPageLoadedInDev(firstResponses, "en")
+			.and(aspect).indexPageLoadedInDev(firstTwoResponses, "en")
 			.and(aspect).indexPageLoadedInDev(pageResponse, "en");
 		
 		then(pageResponse).containsText("manifest=''");
