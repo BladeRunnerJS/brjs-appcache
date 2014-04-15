@@ -7,6 +7,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.caplin.brjs.plugins.appcache.mocks.MockContentPlugin;
+
 public class AppcacheContentPluginProdTests extends SpecTest
 {
 	private App app;
@@ -18,6 +20,7 @@ public class AppcacheContentPluginProdTests extends SpecTest
 	{
 		given(brjs).automaticallyFindsBundlers()
 				.and(brjs).automaticallyFindsMinifiers()
+				.and(brjs).hasContentPlugins(new MockContentPlugin())
 				.and(brjs).hasBeenCreated();
 		app = brjs.app("appcacheApp");
 		aspect = app.aspect("default");
@@ -38,7 +41,7 @@ public class AppcacheContentPluginProdTests extends SpecTest
 		when(app).requestReceived("/default-aspect/appcache/prod.appcache", pageResponse);
 		then(pageResponse).containsText("CACHE MANIFEST");
 	}
-	
+
 	@Test
 	public void testManifestUsesVersionFromConfig() throws Exception
 	{
@@ -58,7 +61,7 @@ public class AppcacheContentPluginProdTests extends SpecTest
 		when(app).requestReceived("/default-aspect/appcache/prod.appcache", pageResponse);
 		then(pageResponse).containsText("# v5678\n");
 	}
-	
+
 	@Test
 	public void testCacheManifestContainsCacheSection() throws Exception
 	{
@@ -66,7 +69,15 @@ public class AppcacheContentPluginProdTests extends SpecTest
 		when(app).requestReceived("/default-aspect/appcache/prod.appcache", pageResponse);
 		then(pageResponse).containsText("CACHE:");
 	}
-	
+
+	@Test
+	public void testCacheManifestContainsProdMockContent() throws Exception
+	{
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+		when(app).requestReceived("/default-aspect/appcache/prod.appcache", pageResponse);
+		then(pageResponse).containsText("../prodMock");
+	}
+
 	@Test
 	public void testCacheManifestContainsNetworkSection() throws Exception
 	{
@@ -74,5 +85,4 @@ public class AppcacheContentPluginProdTests extends SpecTest
 		when(app).requestReceived("/default-aspect/appcache/prod.appcache", pageResponse);
 		then(pageResponse).containsText("NETWORK:");
 	}
-	
 }
