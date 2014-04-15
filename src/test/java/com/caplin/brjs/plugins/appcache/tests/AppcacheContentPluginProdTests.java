@@ -7,7 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AppcacheContentPluginDevTests extends SpecTest
+public class AppcacheContentPluginProdTests extends SpecTest
 {
 	private App app;
 	private Aspect aspect;
@@ -35,7 +35,7 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	public void testCacheManifestIsGenerated() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(app).requestReceived("/default-aspect/appcache/dev.appcache", pageResponse);
+		when(app).requestReceived("/default-aspect/appcache/prod.appcache", pageResponse);
 		then(pageResponse).containsText("CACHE MANIFEST");
 	}
 	
@@ -45,15 +45,25 @@ public class AppcacheContentPluginDevTests extends SpecTest
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
 				.and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
 
-		when(app).requestReceived("/default-aspect/appcache/dev.appcache", pageResponse);
+		when(app).requestReceived("/default-aspect/appcache/prod.appcache", pageResponse);
 		then(pageResponse).containsText("# v1234\n");
+	}
+
+	@Test
+	public void testManifestUsesVersionFromNodePropertiesWhenNoConfig() throws Exception
+	{
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+		aspect.nodeProperties("appcache").setPersisentProperty("version", "5678");
+
+		when(app).requestReceived("/default-aspect/appcache/prod.appcache", pageResponse);
+		then(pageResponse).containsText("# v5678\n");
 	}
 	
 	@Test
 	public void testCacheManifestContainsCacheSection() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(app).requestReceived("/default-aspect/appcache/dev.appcache", pageResponse);
+		when(app).requestReceived("/default-aspect/appcache/prod.appcache", pageResponse);
 		then(pageResponse).containsText("CACHE:");
 	}
 	
@@ -61,7 +71,8 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	public void testCacheManifestContainsNetworkSection() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(app).requestReceived("/default-aspect/appcache/dev.appcache", pageResponse);
+		when(app).requestReceived("/default-aspect/appcache/prod.appcache", pageResponse);
 		then(pageResponse).containsText("NETWORK:");
 	}
+	
 }
