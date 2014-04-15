@@ -157,16 +157,13 @@ public class AppcacheManifestBuilder
 	private List<String> getContentPaths(ContentPlugin plugin, String[] languages) throws ContentProcessingException
 	{
 		// TODO Any language-specific files requested by browsers set to a language not in the
-		// locale list
-		// will not appear in the appcache manifest, and will not be cached. The application will
-		// still work,
-		// it's just that some files will have to be requested over the network every time.
+		// locale list will not appear in the appcache manifest, and will not be cached. The
+		// application will still work, it's just that some files will have to be requested over the
+		// network every time.
 		// This should be fixable when flat-file export is added to BRJS, as the mechanism with
-		// which language
-		// specific files are generated will have changed.
+		// which language specific files are generated will have changed.
 		// In the meantime we let the developer specify required languages in the appcache.conf
-		// file, or assume
-		// "en" as a default if none are provided.
+		// file, or assume "en" as a default if none are provided.
 
 		List<String> contentPaths;
 		if (isDev)
