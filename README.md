@@ -40,7 +40,7 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
 
 ## Development
 
-### Clone the repo and create your project
+### Clone the repo and configure
 - Clone this repository.
 - Configure the path to your BladeRunnerJS directory in `./gradle.properties` e.g.
 ```
