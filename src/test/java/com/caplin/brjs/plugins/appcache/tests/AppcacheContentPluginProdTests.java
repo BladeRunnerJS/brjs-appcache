@@ -77,6 +77,14 @@ public class AppcacheContentPluginProdTests extends SpecTest
 		when(app).requestReceived("/default-aspect/appcache/prod.appcache", pageResponse);
 		then(pageResponse).containsText("../prodMock");
 	}
+	
+	@Test
+	public void testCacheManifestDoesNotContainItself() throws Exception
+	{
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+		when(app).requestReceived("/default-aspect/appcache/prod.appcache", pageResponse);
+		then(pageResponse).doesNotContainText("../appcache/prod.appcache");
+	}
 
 	@Test
 	public void testCacheManifestContainsNetworkSection() throws Exception
