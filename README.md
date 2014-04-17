@@ -3,7 +3,7 @@
 A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_the_application_cache) support in [BRJS applications](http://bladerunnerjs.org/). The plugin automatically generates a manifest file listing the files to cache at a specific URL, so you don't need to manage it yourself.
 
 ## Quick start
-- Download the [latest build of the plugin](appcache-plugin.jar?raw=true) (`appcache-plugin.jar`).
+- Download the [latest release of the plugin](https://github.com/caplin/brjs-appcache/releases/latest) (`appcache-plugin.jar`).
 - Copy the plugin JAR to the `apps/<your-app>/WEB-INF/lib` folder.
 - Add the appcache plugin tag to your HTML element e.g. `<html manifest="<@appcache.url@/>">`
 - That's it, your app is now appcache ready!
@@ -58,5 +58,5 @@ If you are using either Eclipse or IntelliJ IDEA for development, follow the ins
  
 ### Build the plugin
 - Run `./gradlew build` to build and test your plugin.
-- Once the build has passed, your generated plugin JAR is placed in the project root directory.
+- Once the build has passed, your generated plugin JAR is placed in the project `build/lib` directory.
 - You can run `./gradlew copyToBrjs` to automatically copy your jar to the `apps/<your-app>/WEB-INF/lib` directories to be picked up by BRJS.
