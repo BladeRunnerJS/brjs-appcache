@@ -12,7 +12,6 @@ public class YamlAppcacheConf extends AbstractYamlConfFile
 	@Override
 	public void initialize()
 	{
-		version = null;
 	}
 
 	@Override

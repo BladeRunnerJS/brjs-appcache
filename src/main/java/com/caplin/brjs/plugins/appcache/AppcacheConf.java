@@ -1,12 +1,12 @@
 package com.caplin.brjs.plugins.appcache;
 
-import org.bladerunnerjs.model.BRJSNode;
+import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.ConfFile;
 import org.bladerunnerjs.model.exception.ConfigException;
 
 public class AppcacheConf extends ConfFile<YamlAppcacheConf>
 {
-	public AppcacheConf(BRJSNode node) throws ConfigException
+	public AppcacheConf(BundlableNode node) throws ConfigException
 	{
 		super(node, YamlAppcacheConf.class, node.file("conf/appcache.conf"));
 	}

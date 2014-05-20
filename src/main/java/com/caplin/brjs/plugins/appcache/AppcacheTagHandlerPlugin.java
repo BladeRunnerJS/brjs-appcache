@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -15,6 +14,7 @@ import org.bladerunnerjs.model.exception.PropertiesException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
+
 
 /**
  * Generates an appcache manifest URL when the "appcache.url" tag is used.
@@ -105,7 +105,7 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 	 * @throws ConfigException
 	 *             If the version could not be read from the config file
 	 */
-	private String getConfiguredVersion(BRJSNode node) throws ConfigException
+	private String getConfiguredVersion(BundlableNode node) throws ConfigException
 	{
 		AppcacheConf conf = new AppcacheConf(node);
 		return conf.getVersion();

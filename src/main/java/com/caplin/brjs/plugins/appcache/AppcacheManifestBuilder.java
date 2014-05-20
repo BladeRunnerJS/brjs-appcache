@@ -11,6 +11,7 @@ import org.bladerunnerjs.model.exception.PropertiesException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 
+
 /**
  * Builds manifest file strings based on a given set of parameters.
  */
