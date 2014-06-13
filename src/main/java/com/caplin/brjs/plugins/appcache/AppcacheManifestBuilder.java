@@ -123,6 +123,7 @@ public class AppcacheManifestBuilder
 		{
 			// Path begins with .. as paths are relative to the manifest file,
 			// and the manifest is in the "appcache/" directory
+			path = path.replaceAll(" ", "%20");
 			cacheFiles.append("../" + path + "\n");
 		}
 		return cacheFiles.toString();

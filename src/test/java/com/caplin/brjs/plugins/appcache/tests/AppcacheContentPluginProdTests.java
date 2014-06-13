@@ -79,6 +79,14 @@ public class AppcacheContentPluginProdTests extends SpecTest
 	}
 	
 	@Test
+	public void testCacheManifestContainsProdMockContentWithSpaceReplaced() throws Exception
+	{
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+		when(app).requestReceived("/default-aspect/appcache/prod.appcache", pageResponse);
+		then(pageResponse).containsText("../prodSpace%20Mock");
+	}
+	
+	@Test
 	public void testCacheManifestDoesNotContainItself() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();

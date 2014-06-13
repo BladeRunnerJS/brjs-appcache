@@ -69,6 +69,14 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	}
 	
 	@Test
+	public void testCacheManifestContainsDevMockContentWithSpaceReplaced() throws Exception
+	{
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+		when(app).requestReceived("/default-aspect/appcache/dev.appcache", pageResponse);
+		then(pageResponse).containsText("../devSpace%20Mock");
+	}
+	
+	@Test
 	public void testCacheManifestDoesNotContainItself() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();

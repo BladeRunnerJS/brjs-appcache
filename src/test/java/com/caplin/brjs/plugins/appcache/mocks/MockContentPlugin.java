@@ -56,12 +56,12 @@ public class MockContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
-		return Arrays.asList(new String[] {"devMock"});
+		return Arrays.asList(new String[] {"devMock", "devSpace Mock"});
 	}
 
 	@Override
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
-		return Arrays.asList(new String[] {"prodMock"});
+		return Arrays.asList(new String[] {"prodMock", "prodSpace Mock"});
 	}
 }
