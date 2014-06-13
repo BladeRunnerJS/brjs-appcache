@@ -31,11 +31,8 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
 <a name="configuration"></a>
 ### Configuration
 - Appcache is configured at an aspect level, as different aspects will use different appcaches.
-- A config file named `appcache.conf` is looked for in the `<aspect>/conf` folder. It supports the following properties in [YAML format](http://en.wikipedia.org/wiki/YAML#Examples):
+- A config file named `appcache.conf` is looked for in the `<aspect>/conf` folder. It supports the following properties in [YAML format](http://en.wikipedia.org/wiki/YAML#Examples) (i.e. `property: value`):
     - `version` a specific version to use for the appcache manifest in dev or prod.
-
-    > The config file must either have a valid property name in it or be removed. Invalid property names or empty config files will produce errors in BRJS. The property *value* however can be blank.
-
 - Only files for the listed locales are cached. The locales configuration is standard BRJS functionality, and can be found in the `<your-app>/app.conf` file.
 
 ## Development
