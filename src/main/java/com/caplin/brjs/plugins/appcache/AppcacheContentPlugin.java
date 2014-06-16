@@ -97,7 +97,7 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 		{
 			AppcacheConf config = new AppcacheConf(bundleSet.getBundlableNode());
 			boolean isDev = contentPath.formName.equals("dev-appcache-request");
-			AppcacheManifestBuilder manifestBuilder = new AppcacheManifestBuilder(brjs, bundleSet, config, isDev);
+			AppcacheManifestBuilder manifestBuilder = new AppcacheManifestBuilder(brjs, bundleSet, config, version, isDev);
 			String manifest = manifestBuilder.getManifest();
 
 			writer.write(manifest);

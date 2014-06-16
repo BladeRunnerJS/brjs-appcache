@@ -8,7 +8,6 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.PropertiesException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -35,6 +34,7 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 		try
 		{
 			String appcacheVersion = getConfiguredVersion(bundleSet.getBundlableNode());
+			// We enable appcache in dev by populating the tag if there's a config file with a version specified
 			if (appcacheVersion != null)
 			{
 				writer.write(contentPathParser.createRequest("dev-appcache-request"));
@@ -60,17 +60,9 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 	{
 		try
 		{
-			String appcacheVersion = getConfiguredVersion(bundleSet.getBundlableNode());
-			
-			if (appcacheVersion == null)
-			{
-				appcacheVersion = version;
-			}
-			
-			bundleSet.getBundlableNode().nodeProperties("appcache").setPersisentProperty("version", appcacheVersion);
 			writer.write(contentPathParser.createRequest("prod-appcache-request"));
 		}
-		catch (MalformedTokenException | ConfigException | PropertiesException e)
+		catch (MalformedTokenException e)
 		{
 			throw new IOException(e);
 		}

@@ -53,13 +53,41 @@ public class AppcacheContentPluginProdTests extends SpecTest
 	}
 
 	@Test
-	public void testManifestUsesVersionFromNodePropertiesWhenNoConfig() throws Exception
+	public void testManifestUsesBrjsVersionWhenNoConfig() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		aspect.nodeProperties("appcache").setPersisentProperty("version", "5678");
-
 		when(aspect).requestReceived("appcache/prod.appcache", pageResponse);
-		then(pageResponse).containsText("# v5678\n");
+		// The version here is 'dev' because the BRJS spec test framework currently always passes in 'dev' 
+		// as the version to the ContentPlugin.writeContent method. We know that we're not actually in dev
+		// mode because then the manifest would have a blank version (see the equivalent test in 
+		// AppcacheContentPluginDevTests)
+		then(pageResponse).containsText("# vdev\n");
+	}
+	
+	@Test
+	public void testManifestUsesBrjsVersionWhenEmptyConfig() throws Exception
+	{
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+			.and(aspect).containsFileWithContents("conf/appcache.conf", "");
+		when(aspect).requestReceived("appcache/prod.appcache", pageResponse);
+		// The version here is 'dev' because the BRJS spec test framework currently always passes in 'dev' 
+		// as the version to the ContentPlugin.writeContent method. We know that we're not actually in dev
+		// mode because then the manifest would have a blank version (see the equivalent test in 
+		// AppcacheContentPluginDevTests)
+		then(pageResponse).containsText("# vdev\n");
+	}
+	
+	@Test
+	public void testManifestUsesBrjsVersionWhenBlankConfig() throws Exception
+	{
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+		.and(aspect).containsFileWithContents("conf/appcache.conf", "version: ");
+		when(aspect).requestReceived("appcache/prod.appcache", pageResponse);
+		// The version here is 'dev' because the BRJS spec test framework currently always passes in 'dev' 
+		// as the version to the ContentPlugin.writeContent method. We know that we're not actually in dev
+		// mode because then the manifest would have a blank version (see the equivalent test in 
+		// AppcacheContentPluginDevTests)
+		then(pageResponse).containsText("# vdev\n");
 	}
 
 	@Test

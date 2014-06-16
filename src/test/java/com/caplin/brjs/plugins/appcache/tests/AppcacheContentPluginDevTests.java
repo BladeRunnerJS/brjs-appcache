@@ -53,6 +53,32 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	}
 
 	@Test
+	public void testManifestUsesBlankVersionWhenNoConfig() throws Exception
+	{
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+		when(aspect).requestReceived("appcache/dev.appcache", pageResponse);
+		then(pageResponse).containsText("# v\n");
+	}
+	
+	@Test
+	public void testManifestUsesBlankVersionWhenEmptyConfig() throws Exception
+	{
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+			.and(aspect).containsFileWithContents("conf/appcache.conf", "");
+		when(aspect).requestReceived("appcache/dev.appcache", pageResponse);
+		then(pageResponse).containsText("# v\n");
+	}
+	
+	@Test
+	public void testManifestUsesBlankVersionWhenBlankConfig() throws Exception
+	{
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+			.and(aspect).containsFileWithContents("conf/appcache.conf", "version: ");
+		when(aspect).requestReceived("appcache/dev.appcache", pageResponse);
+		then(pageResponse).containsText("# v\n");
+	}
+
+	@Test
 	public void testCacheManifestContainsCacheSection() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();

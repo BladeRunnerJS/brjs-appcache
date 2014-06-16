@@ -78,8 +78,7 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
 			.and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
 
-		StringBuffer firstResponse = new StringBuffer();
-		when(aspect).indexPageLoadedInDev(firstResponse, "en")
+		when(aspect).indexPageLoadedInDev(new StringBuffer(), "en")
 			.and(aspect).containsFileWithContents("conf/appcache.conf", "version: ")
 			.and(aspect).indexPageLoadedInDev(pageResponse, "en");
 		
