@@ -44,7 +44,7 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public String getGroupName()
+	public String getCompositeGroupName()
 	{
 		return null;
 	}
@@ -86,7 +86,7 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os, String version) throws ContentProcessingException
 	{
 		if (!contentPath.formName.equals("dev-appcache-request") && !contentPath.formName.equals("prod-appcache-request"))
 		{

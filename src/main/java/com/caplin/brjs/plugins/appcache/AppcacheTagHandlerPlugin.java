@@ -2,8 +2,6 @@ package com.caplin.brjs.plugins.appcache;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.model.BRJS;
@@ -32,18 +30,12 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 	}
 
 	@Override
-	public String getGroupName()
-	{
-		return null;
-	}
-
-	@Override
-	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
+	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer, String version) throws IOException
 	{
 		try
 		{
-			String version = getConfiguredVersion(bundleSet.getBundlableNode());
-			if (version != null)
+			String appcacheVersion = getConfiguredVersion(bundleSet.getBundlableNode());
+			if (appcacheVersion != null)
 			{
 				writer.write(contentPathParser.createRequest("dev-appcache-request"));
 				devAppcachePreviouslyEnabled = true;
@@ -64,30 +56,18 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 	}
 
 	@Override
-	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
+	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer, String version) throws IOException
 	{
 		try
 		{
-			String version = getConfiguredVersion(bundleSet.getBundlableNode());
-			storeVersionToNodeProperties(version, bundleSet.getBundlableNode());
+			String appcacheVersion = getConfiguredVersion(bundleSet.getBundlableNode());
+			storeVersionToNodeProperties(appcacheVersion, bundleSet.getBundlableNode());
 			writer.write(contentPathParser.createRequest("prod-appcache-request"));
 		}
 		catch (MalformedTokenException | ConfigException | PropertiesException e)
 		{
 			throw new IOException(e);
 		}
-	}
-
-	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin()
-	{
-		return new ArrayList<String>();
-	}
-
-	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin()
-	{
-		return new ArrayList<String>();
 	}
 
 	@Override

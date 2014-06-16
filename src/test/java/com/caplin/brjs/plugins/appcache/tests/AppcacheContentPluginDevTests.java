@@ -38,7 +38,7 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	public void testCacheManifestIsGenerated() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(app).requestReceived("/default-aspect/appcache/dev.appcache", pageResponse);
+		when(aspect).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).containsText("CACHE MANIFEST");
 	}
 
@@ -48,7 +48,7 @@ public class AppcacheContentPluginDevTests extends SpecTest
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
 				.and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
 
-		when(app).requestReceived("/default-aspect/appcache/dev.appcache", pageResponse);
+		when(aspect).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).containsText("# v1234\n");
 	}
 
@@ -56,7 +56,7 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	public void testCacheManifestContainsCacheSection() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(app).requestReceived("/default-aspect/appcache/dev.appcache", pageResponse);
+		when(aspect).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).containsText("CACHE:");
 	}
 
@@ -64,7 +64,7 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	public void testCacheManifestContainsDevMockContent() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(app).requestReceived("/default-aspect/appcache/dev.appcache", pageResponse);
+		when(aspect).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).containsText("../devMock");
 	}
 	
@@ -72,7 +72,7 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	public void testCacheManifestContainsDevMockContentWithSpaceReplaced() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(app).requestReceived("/default-aspect/appcache/dev.appcache", pageResponse);
+		when(aspect).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).containsText("../devSpace%20Mock");
 	}
 	
@@ -80,7 +80,7 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	public void testCacheManifestDoesNotContainItself() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(app).requestReceived("/default-aspect/appcache/dev.appcache", pageResponse);
+		when(aspect).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).doesNotContainText("../appcache/dev.appcache");
 	}
 
@@ -88,7 +88,7 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	public void testCacheManifestContainsNetworkSection() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(app).requestReceived("/default-aspect/appcache/dev.appcache", pageResponse);
+		when(aspect).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).containsText("NETWORK:");
 	}
 }
