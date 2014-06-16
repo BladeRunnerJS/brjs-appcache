@@ -61,7 +61,13 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 		try
 		{
 			String appcacheVersion = getConfiguredVersion(bundleSet.getBundlableNode());
-			storeVersionToNodeProperties(appcacheVersion, bundleSet.getBundlableNode());
+			
+			if (appcacheVersion == null)
+			{
+				appcacheVersion = version;
+			}
+			
+			bundleSet.getBundlableNode().nodeProperties("appcache").setPersisentProperty("version", appcacheVersion);
 			writer.write(contentPathParser.createRequest("prod-appcache-request"));
 		}
 		catch (MalformedTokenException | ConfigException | PropertiesException e)
@@ -89,25 +95,6 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 	{
 		AppcacheConf conf = new AppcacheConf(node);
 		return conf.getVersion();
-	}
-
-	/**
-	 * Stores the manifest version for the given node and saves it to the persistent property store so it can be retrieved later. The manifest version will be retrieved from the appcache config file for the node if it exists, otherwise it will be a generated unique number for this page request.
-	 * 
-	 * @param node
-	 *            The BRJSNode that the version should be stored for
-	 * @throws ConfigException
-	 *             If the version could not be read from the config file
-	 * @throws PropertiesException
-	 *             If the version could not be saved to the properties store
-	 */
-	private void storeVersionToNodeProperties(String version, BundlableNode node) throws ConfigException, PropertiesException
-	{
-		if (version == null)
-		{
-			version = Long.toString(System.currentTimeMillis());
-		}
-		node.nodeProperties("appcache").setPersisentProperty("version", version);
 	}
 
 }

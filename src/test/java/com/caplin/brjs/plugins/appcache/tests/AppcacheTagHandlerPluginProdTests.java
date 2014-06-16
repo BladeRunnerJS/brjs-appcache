@@ -1,9 +1,5 @@
 package com.caplin.brjs.plugins.appcache.tests;
 
-import static com.caplin.brjs.plugins.appcache.tests.matchers.RegexMatcher.matchesPattern;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertEquals;
-
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -50,9 +46,7 @@ public class AppcacheTagHandlerPluginProdTests extends SpecTest
 
 		when(aspect).indexPageLoadedInProd(pageResponse, "en");
 
-		// TODO Use upcoming BRJS then().containsPersistentNodeProperty when introduced
-		String version = aspect.nodeProperties("appcache").getPersisentProperty("version");
-		assertThat(version, matchesPattern("\\d+"));
+		then(aspect).containsPersistentNodeProperty("appcache", "version", "prod");
 	}
 
 	@Test
@@ -74,9 +68,7 @@ public class AppcacheTagHandlerPluginProdTests extends SpecTest
 
 		when(aspect).indexPageLoadedInProd(pageResponse, "en");
 
-		// TODO Use upcoming BRJS then().containsPersistentNodeProperty when introduced
-		String version = aspect.nodeProperties("appcache").getPersisentProperty("version");
-		assertThat(version, matchesPattern("\\d+"));
+		then(aspect).containsPersistentNodeProperty("appcache", "version", "prod");
 	}
 	
 	@Test
@@ -98,9 +90,7 @@ public class AppcacheTagHandlerPluginProdTests extends SpecTest
 
 		when(aspect).indexPageLoadedInProd(pageResponse, "en");
 
-		// TODO Use upcoming BRJS then().containsPersistentNodeProperty when introduced
-		String version = aspect.nodeProperties("appcache").getPersisentProperty("version");
-		assertThat(version, matchesPattern("\\d+"));
+		then(aspect).containsPersistentNodeProperty("appcache", "version", "prod");
 	}
 	
 	@Test
@@ -122,8 +112,6 @@ public class AppcacheTagHandlerPluginProdTests extends SpecTest
 		
 		when(aspect).indexPageLoadedInProd(pageResponse, "en");
 		
-		// TODO Use upcoming BRJS then().containsPersistentNodeProperty when introduced
-		String version = aspect.nodeProperties("appcache").getPersisentProperty("version");
-		assertEquals("1234", version);
+		then(aspect).containsPersistentNodeProperty("appcache", "version", "1234");
 	}
 }
