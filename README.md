@@ -15,7 +15,7 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
 ### Installation
 - Copy the plugin JAR to the `apps/<your-app>/WEB-INF/lib` folder for any apps you want to use the plugin.
 
-> This is a requirement of BRJS v0.6, in the future the plugin deployment process may change.
+> This is a requirement of BRJS <= v0.9, in the future the plugin deployment process may change.
 
 ### Enabling
 - To link it in to your application the plugin provides the `appcache.url` tag handler. This tag will replaced with the URL to the manifest file, so you should set the `manifest` attribute on the `html` element to use the tag as its value. 
