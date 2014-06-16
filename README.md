@@ -43,9 +43,9 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
     - Pass it in to gradle with every build command by adding `-PbrjsPath=BRJS_DIRECTORY` to the command line. This is usually useful for automated builds, but is painful for development. A better way is to...
     - Create a `./gradle.properties` file in the plugin root directory with the same property. This will apply to every run of the build. E.g.
 
-    ```
-    brjsPath=BRJS_DIRECTORY
-    ```
+        ```
+        brjsPath=BRJS_DIRECTORY
+        ```
 
 ### Using Eclipse or IntelliJ IDEA 
 If you are using either Eclipse or IntelliJ IDEA for development, follow the instructions below to set up your project files
