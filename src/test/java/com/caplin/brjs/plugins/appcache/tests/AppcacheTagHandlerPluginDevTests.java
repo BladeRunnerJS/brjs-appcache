@@ -39,18 +39,16 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 		then(pageResponse).containsText("manifest=''");
 	}
 
-// This test currently fails due to a BRJS issue
-// https://github.com/BladeRunnerJS/brjs/issues/524
-//	@Test
-//	public void appcacheUrlTagIsEmptyWithEmptyConfigFile() throws Exception
-//	{
-//		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
-//			.and(aspect).containsFileWithContents("conf/appcache.conf", "");
-//
-//		when(aspect).indexPageLoadedInDev(pageResponse, "en");
-//
-//		then(pageResponse).containsText("manifest=''");
-//	}
+	@Test
+	public void appcacheUrlTagIsEmptyWithEmptyConfigFile() throws Exception
+	{
+		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
+			.and(aspect).containsFileWithContents("conf/appcache.conf", "");
+
+		when(aspect).indexPageLoadedInDev(pageResponse, "en");
+
+		then(pageResponse).containsText("manifest=''");
+	}
 
 	@Test
 	public void tagIsEmptyWithBlankVersionGiven() throws Exception

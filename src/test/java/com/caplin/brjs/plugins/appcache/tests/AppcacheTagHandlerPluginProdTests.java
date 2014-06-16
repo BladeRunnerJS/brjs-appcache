@@ -55,33 +55,29 @@ public class AppcacheTagHandlerPluginProdTests extends SpecTest
 		assertThat(version, matchesPattern("\\d+"));
 	}
 
-	// This test currently fails due to a BRJS issue
-	// https://github.com/BladeRunnerJS/brjs/issues/524
-//	@Test
-//	public void tagIsPresentWithEmptyConfigFile() throws Exception
-//	{
-//		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
-//			.and(aspect).containsFileWithContents("conf/appcache.conf", "");
-//
-//		when(aspect).indexPageLoadedInProd(pageResponse, "en");
-//
-//		then(pageResponse).containsText("manifest='appcache/prod.appcache'");
-//	}
+	@Test
+	public void tagIsPresentWithEmptyConfigFile() throws Exception
+	{
+		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
+			.and(aspect).containsFileWithContents("conf/appcache.conf", "");
 
-	// This test currently fails due to a BRJS issue
-	// https://github.com/BladeRunnerJS/brjs/issues/524
-//	@Test
-//	public void generatedVersionIsSavedToNodePropertiesWithEmptyConfigFile() throws Exception
-//	{
-//		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
-//			.and(aspect).containsFileWithContents("conf/appcache.conf", "");
-//
-//		when(aspect).indexPageLoadedInProd(pageResponse, "en");
-//
-//		// TODO Use upcoming BRJS then().containsPersistentNodeProperty when introduced
-//		String version = aspect.nodeProperties("appcache").getPersisentProperty("version");
-//		assertThat(version, matchesPattern("\\d+"));
-//	}
+		when(aspect).indexPageLoadedInProd(pageResponse, "en");
+
+		then(pageResponse).containsText("manifest='appcache/prod.appcache'");
+	}
+
+	@Test
+	public void generatedVersionIsSavedToNodePropertiesWithEmptyConfigFile() throws Exception
+	{
+		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
+			.and(aspect).containsFileWithContents("conf/appcache.conf", "");
+
+		when(aspect).indexPageLoadedInProd(pageResponse, "en");
+
+		// TODO Use upcoming BRJS then().containsPersistentNodeProperty when introduced
+		String version = aspect.nodeProperties("appcache").getPersisentProperty("version");
+		assertThat(version, matchesPattern("\\d+"));
+	}
 	
 	@Test
 	public void tagIsPresentWithConfigFileWithNoVersionValue() throws Exception
