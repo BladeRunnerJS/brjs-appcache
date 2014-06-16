@@ -39,10 +39,13 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
 
 ### Clone the repo and configure
 - Clone this repository.
-- Configure the path to your BladeRunnerJS directory in `./gradle.properties` e.g.
-```
-brjsPath=C:/development/brjs
-```
+- Building the project is dependent on the BRJS SDK libraries and your BRJS root directory path must be passed in to the build. There are two ways you could specify the path:
+    - Pass it in to gradle with every build command by adding `-PbrjsPath=BRJS_DIRECTORY` to the command line. This is usually useful for automated builds, but is painful for development. A better way is to...
+    - Create a `./gradle.properties` file in the plugin root directory with the same property. This will apply to every run of the build. E.g.
+
+    ```
+    brjsPath=BRJS_DIRECTORY
+    ```
 
 ### Using Eclipse or IntelliJ IDEA 
 If you are using either Eclipse or IntelliJ IDEA for development, follow the instructions below to set up your project files
