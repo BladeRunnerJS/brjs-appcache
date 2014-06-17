@@ -72,6 +72,6 @@ Plugin       | BRJS
 Untested     | <= 0.5
 Unsupported  | >= 0.9
 
-- BRJS 0.9 made some changes that prevent appcache from working. BRJS issue BladeRunnerJS/brjs#725 is tracking the problem.
+- BRJS 0.9 made some changes that prevent appcache from working. BRJS is [aware of the problem](https://github.com/BladeRunnerJS/brjs/issues/725).
 
 > Developers should branch from the 1.0.2 tag for stable development. The current state of master is for BRJS 0.9 support.
