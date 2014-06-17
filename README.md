@@ -65,14 +65,13 @@ If you are using either Eclipse or IntelliJ IDEA for development, follow the ins
 ## BRJS Compatability
 Ensure you use the correct version of the plugin for your BRJS version:
 
-```
 Plugin       | BRJS
--------------+---------
+-------------|---------
 1.0.2        | 0.6-0.8
 1.0.1, 1.0.0 | 0.6-0.7
 Untested     | <= 0.5
 Unsupported  | >= 0.9
-```
-> BRJS 0.9 made some changes that prevent appcache from working. BRJS issue BladeRunnerJS/brjs#725 is tracking the problem.
+
+- BRJS 0.9 made some changes that prevent appcache from working. BRJS issue BladeRunnerJS/brjs#725 is tracking the problem.
 
 > Developers should branch from the 1.0.2 tag for stable development. The current state of master is for BRJS 0.9 support.
