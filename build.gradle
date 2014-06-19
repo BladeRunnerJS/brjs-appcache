@@ -38,6 +38,18 @@ task copyToApps, type: Copy, dependsOn: jar, {
 task copyToBrjs, dependsOn: [copyToConf, copyToApps], {
 }
 
+// automatically update the latest JAR when the build passes
+tasks.build.doLast {
+	def latestBuildDir = new File("${projectDir}")
+	def projectFolderName = new File("${projectDir}").getName()
+	copy {
+		from jar.outputs.files.singleFile
+		into latestBuildDir
+		rename ("${project.name}", "${projectFolderName}")
+	}
+	println "DEPRECATED: Copied latest JAR to '${latestBuildDir}/${projectFolderName}.jar'. This step will be removed in the future, and you should instead use the JAR generated at '${jar.outputs.files.singleFile}'"
+}
+
 // automatically add brjs-core sources jar for Eclipse classpath
 tasks.eclipse.doLast {
 	try {

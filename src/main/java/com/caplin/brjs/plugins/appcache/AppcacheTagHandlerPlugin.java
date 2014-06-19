@@ -2,12 +2,15 @@ package com.caplin.brjs.plugins.appcache;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.PropertiesException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -29,13 +32,18 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 	}
 
 	@Override
-	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer, String version) throws IOException
+	public String getGroupName()
+	{
+		return null;
+	}
+
+	@Override
+	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
 	{
 		try
 		{
-			String appcacheVersion = getConfiguredVersion(bundleSet.getBundlableNode());
-			// We enable appcache in dev by populating the tag if there's a config file with a version specified
-			if (appcacheVersion != null)
+			String version = getConfiguredVersion(bundleSet.getBundlableNode());
+			if (version != null)
 			{
 				writer.write(contentPathParser.createRequest("dev-appcache-request"));
 				devAppcachePreviouslyEnabled = true;
@@ -56,16 +64,30 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 	}
 
 	@Override
-	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer, String version) throws IOException
+	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
 	{
 		try
 		{
+			String version = getConfiguredVersion(bundleSet.getBundlableNode());
+			storeVersionToNodeProperties(version, bundleSet.getBundlableNode());
 			writer.write(contentPathParser.createRequest("prod-appcache-request"));
 		}
-		catch (MalformedTokenException e)
+		catch (MalformedTokenException | ConfigException | PropertiesException e)
 		{
 			throw new IOException(e);
 		}
+	}
+
+	@Override
+	public List<String> getPluginsThatMustAppearBeforeThisPlugin()
+	{
+		return new ArrayList<String>();
+	}
+
+	@Override
+	public List<String> getPluginsThatMustAppearAfterThisPlugin()
+	{
+		return new ArrayList<String>();
 	}
 
 	@Override
@@ -87,6 +109,25 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 	{
 		AppcacheConf conf = new AppcacheConf(node);
 		return conf.getVersion();
+	}
+
+	/**
+	 * Stores the manifest version for the given node and saves it to the persistent property store so it can be retrieved later. The manifest version will be retrieved from the appcache config file for the node if it exists, otherwise it will be a generated unique number for this page request.
+	 * 
+	 * @param node
+	 *            The BRJSNode that the version should be stored for
+	 * @throws ConfigException
+	 *             If the version could not be read from the config file
+	 * @throws PropertiesException
+	 *             If the version could not be saved to the properties store
+	 */
+	private void storeVersionToNodeProperties(String version, BundlableNode node) throws ConfigException, PropertiesException
+	{
+		if (version == null)
+		{
+			version = Long.toString(System.currentTimeMillis());
+		}
+		node.nodeProperties("appcache").setPersisentProperty("version", version);
 	}
 
 }

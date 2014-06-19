@@ -27,7 +27,7 @@ public class MockContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public String getCompositeGroupName() {
+	public String getGroupName() {
 		return "";
 	}
 	
@@ -49,7 +49,7 @@ public class MockContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os, String version) throws ContentProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException
 	{
 	}
 
