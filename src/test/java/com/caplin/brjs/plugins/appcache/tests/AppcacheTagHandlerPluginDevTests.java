@@ -16,7 +16,7 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 	@Before
 	public void setUp() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers().and(brjs).hasBeenCreated();
+		given(brjs).automaticallyFindsBundlerPlugins().and(brjs).hasBeenCreated();
 		app = brjs.app("appcacheApp");
 		aspect = app.aspect("default");
 	}
@@ -69,7 +69,7 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 
 		when(aspect).indexPageLoadedInDev(pageResponse, "en");
 
-		then(pageResponse).containsText("manifest='appcache/dev.appcache'");
+		then(pageResponse).containsText("manifest='../static/appcache/dev.appcache'");
 	}
 	
 	@Test

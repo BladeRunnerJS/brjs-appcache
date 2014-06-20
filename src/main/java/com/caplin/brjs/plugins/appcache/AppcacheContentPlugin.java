@@ -30,8 +30,8 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		// @formatter:off
-		contentPathParserBuilder.accepts("appcache/dev.appcache").as("dev-appcache-request")
-		                        .and("appcache/prod.appcache").as("prod-appcache-request");
+		contentPathParserBuilder.accepts("/appcache/dev.appcache").as("dev-appcache-request")
+		                        .and("/appcache/prod.appcache").as("prod-appcache-request");
 		// @formatter:on
 
 		contentPathParser = contentPathParserBuilder.build();
@@ -102,7 +102,7 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 
 			writer.write(manifest);
 		}
-		catch (IOException | ConfigException | PropertiesException e)
+		catch (IOException | ConfigException | PropertiesException | MalformedTokenException e)
 		{
 			throw new ContentProcessingException(e);
 		}

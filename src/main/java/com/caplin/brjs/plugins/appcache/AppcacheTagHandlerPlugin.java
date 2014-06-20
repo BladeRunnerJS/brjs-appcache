@@ -37,7 +37,7 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 			// We enable appcache in dev by populating the tag if there's a config file with a version specified
 			if (appcacheVersion != null)
 			{
-				writer.write(contentPathParser.createRequest("dev-appcache-request"));
+				writer.write("../static" + contentPathParser.createRequest("dev-appcache-request"));
 				devAppcachePreviouslyEnabled = true;
 			}
 			else if (devAppcachePreviouslyEnabled)
@@ -60,7 +60,7 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 	{
 		try
 		{
-			writer.write(contentPathParser.createRequest("prod-appcache-request"));
+			writer.write("../static" + contentPathParser.createRequest("prod-appcache-request"));
 		}
 		catch (MalformedTokenException e)
 		{
@@ -71,7 +71,7 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		this.contentPathParser = brjs.plugins().contentProvider("appcache").getContentPathParser();
+		this.contentPathParser = brjs.plugins().contentPlugin("appcache").getContentPathParser();
 	}
 
 	/**

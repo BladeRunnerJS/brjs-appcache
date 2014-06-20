@@ -18,8 +18,8 @@ public class AppcacheContentPluginProdTests extends SpecTest
 	@Before
 	public void setUp() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-				.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+				.and(brjs).automaticallyFindsMinifierPlugins()
 				.and(brjs).hasContentPlugins(new MockContentPlugin())
 				.and(brjs).hasBeenCreated();
 		app = brjs.app("appcacheApp");
@@ -38,7 +38,7 @@ public class AppcacheContentPluginProdTests extends SpecTest
 	public void testCacheManifestIsGenerated() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(aspect).requestReceived("appcache/prod.appcache", pageResponse);
+		when(app).requestReceived("static/appcache/prod.appcache", pageResponse);
 		then(pageResponse).containsText("CACHE MANIFEST");
 	}
 
@@ -48,7 +48,7 @@ public class AppcacheContentPluginProdTests extends SpecTest
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
 				.and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
 
-		when(aspect).requestReceived("appcache/prod.appcache", pageResponse);
+		when(app).requestReceived("static/appcache/prod.appcache", pageResponse);
 		then(pageResponse).containsText("# v1234\n");
 	}
 
@@ -56,7 +56,7 @@ public class AppcacheContentPluginProdTests extends SpecTest
 	public void testManifestUsesBrjsVersionWhenNoConfig() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(aspect).requestReceived("appcache/prod.appcache", pageResponse);
+		when(app).requestReceived("static/appcache/prod.appcache", pageResponse);
 		// The version here is 'dev' because the BRJS spec test framework currently always passes in 'dev' 
 		// as the version to the ContentPlugin.writeContent method. We know that we're not actually in dev
 		// mode because then the manifest would have a blank version (see the equivalent test in 
@@ -69,7 +69,7 @@ public class AppcacheContentPluginProdTests extends SpecTest
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
 			.and(aspect).containsFileWithContents("conf/appcache.conf", "");
-		when(aspect).requestReceived("appcache/prod.appcache", pageResponse);
+		when(app).requestReceived("static/appcache/prod.appcache", pageResponse);
 		// The version here is 'dev' because the BRJS spec test framework currently always passes in 'dev' 
 		// as the version to the ContentPlugin.writeContent method. We know that we're not actually in dev
 		// mode because then the manifest would have a blank version (see the equivalent test in 
@@ -82,7 +82,7 @@ public class AppcacheContentPluginProdTests extends SpecTest
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
 		.and(aspect).containsFileWithContents("conf/appcache.conf", "version: ");
-		when(aspect).requestReceived("appcache/prod.appcache", pageResponse);
+		when(app).requestReceived("static/appcache/prod.appcache", pageResponse);
 		// The version here is 'dev' because the BRJS spec test framework currently always passes in 'dev' 
 		// as the version to the ContentPlugin.writeContent method. We know that we're not actually in dev
 		// mode because then the manifest would have a blank version (see the equivalent test in 
@@ -94,7 +94,7 @@ public class AppcacheContentPluginProdTests extends SpecTest
 	public void testCacheManifestContainsCacheSection() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(aspect).requestReceived("appcache/prod.appcache", pageResponse);
+		when(app).requestReceived("static/appcache/prod.appcache", pageResponse);
 		then(pageResponse).containsText("CACHE:");
 	}
 
@@ -102,31 +102,31 @@ public class AppcacheContentPluginProdTests extends SpecTest
 	public void testCacheManifestContainsProdMockContent() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(aspect).requestReceived("appcache/prod.appcache", pageResponse);
-		then(pageResponse).containsText("../prodMock");
+		when(app).requestReceived("static/appcache/prod.appcache", pageResponse);
+		then(pageResponse).containsText("../../v/dev/prodMock");
 	}
 	
 	@Test
 	public void testCacheManifestContainsProdMockContentWithSpaceReplaced() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(aspect).requestReceived("appcache/prod.appcache", pageResponse);
-		then(pageResponse).containsText("../prodSpace%20Mock");
+		when(app).requestReceived("static/appcache/prod.appcache", pageResponse);
+		then(pageResponse).containsText("../../v/dev/prodSpace%20Mock");
 	}
 	
 	@Test
 	public void testCacheManifestDoesNotContainItself() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(aspect).requestReceived("appcache/prod.appcache", pageResponse);
-		then(pageResponse).doesNotContainText("../appcache/prod.appcache");
+		when(app).requestReceived("static/appcache/prod.appcache", pageResponse);
+		then(pageResponse).doesNotContainText("appcache/prod.appcache");
 	}
 
 	@Test
 	public void testCacheManifestContainsNetworkSection() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(aspect).requestReceived("appcache/prod.appcache", pageResponse);
+		when(app).requestReceived("static/appcache/prod.appcache", pageResponse);
 		then(pageResponse).containsText("NETWORK:");
 	}
 }

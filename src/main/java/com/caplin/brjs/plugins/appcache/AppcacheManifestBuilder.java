@@ -2,11 +2,13 @@ package com.caplin.brjs.plugins.appcache;
 
 import java.util.List;
 
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.PropertiesException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 
 /**
@@ -48,8 +50,9 @@ public class AppcacheManifestBuilder
 	 * @throws PropertiesException
 	 * @throws ContentProcessingException
 	 * @throws ConfigException
+	 * @throws MalformedTokenException 
 	 */
-	public String getManifest() throws PropertiesException, ContentProcessingException, ConfigException
+	public String getManifest() throws PropertiesException, ContentProcessingException, ConfigException, MalformedTokenException
 	{
 		String manifest = getManifestHeader();
 		manifest += getManifestCacheFiles();
@@ -95,14 +98,14 @@ public class AppcacheManifestBuilder
 		return version;
 	}
 
-	private String getManifestCacheFiles() throws ContentProcessingException, ConfigException
+	private String getManifestCacheFiles() throws ContentProcessingException, ConfigException, MalformedTokenException
 	{
 		StringBuilder cacheFiles = new StringBuilder();
 		cacheFiles.append("CACHE:\n");
 
 		// See #getContentPaths for an explanation on why we need configured languages
 		String[] languages = getConfiguredLocales();
-		for (ContentPlugin plugin : brjs.plugins().contentProviders())
+		for (ContentPlugin plugin : brjs.plugins().contentPlugins())
 		{
 			String pluginCacheFiles = getManifestCacheFilesForPlugin(plugin, languages);
 			cacheFiles.append(pluginCacheFiles);
@@ -113,7 +116,7 @@ public class AppcacheManifestBuilder
 		return cacheFiles.toString();
 	}
 
-	private String getManifestCacheFilesForPlugin(ContentPlugin plugin, String[] languages) throws ContentProcessingException
+	private String getManifestCacheFilesForPlugin(ContentPlugin plugin, String[] languages) throws ContentProcessingException, MalformedTokenException
 	{
 		// Do not specify the manifest itself in the cache manifest file, otherwise it
 		// will be nearly impossible to inform the browser a new manifest is available
@@ -123,11 +126,14 @@ public class AppcacheManifestBuilder
 		}
 
 		StringBuilder cacheFiles = new StringBuilder();
-		for (String path : getContentPaths(plugin, languages))
+		App app = bundleSet.getBundlableNode().app();
+		for (String contentPath : getContentPaths(plugin, languages))
 		{
+			String path = (isDev) ? app.createDevBundleRequest(contentPath, brjsVersion) : app.createProdBundleRequest(contentPath, brjsVersion);
+			// Spaces need to be URL encoded or the manifest doesnt load the files correctly
+			path = path.replaceAll(" ", "%20");
 			// Path begins with .. as paths are relative to the manifest file,
 			// and the manifest is in the "appcache/" directory
-			path = path.replaceAll(" ", "%20");
 			cacheFiles.append("../" + path + "\n");
 		}
 		return cacheFiles.toString();
