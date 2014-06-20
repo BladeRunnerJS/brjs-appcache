@@ -60,7 +60,7 @@ If you are using either Eclipse or IntelliJ IDEA for development, follow the ins
 ### Build the plugin
 - Run `./gradlew build` to build and test your plugin.
 - Once the build has passed, your generated plugin JAR is placed in the project `build/lib` directory.
-- You can run `./gradlew copyToBrjs` to automatically copy your jar to the `apps/<your-app>/WEB-INF/lib` directories to be picked up by BRJS.
+- You can run `./gradlew copyToBrjs` to automatically build and copy your jar to the `apps/<your-app>/WEB-INF/lib` directories to be picked up by BRJS.
 
 
 ## BRJS Compatability
