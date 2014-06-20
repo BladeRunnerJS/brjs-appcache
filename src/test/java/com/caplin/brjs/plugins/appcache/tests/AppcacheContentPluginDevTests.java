@@ -120,10 +120,10 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	}
 	
 	@Test
-	public void testCacheManifestDoesNotContainCompositeFiles() throws Exception
+	public void testCacheManifestDoesContainCompositeFiles() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
 		when(app).requestReceived("static/appcache/dev.appcache", pageResponse);
-		then(pageResponse).doesNotContainText("compositeDev");
+		then(pageResponse).containsText("../../v/dev/compositeDev");
 	}
 }

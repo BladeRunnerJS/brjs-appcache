@@ -120,10 +120,10 @@ public class AppcacheManifestBuilder
 	{
 		// Do not specify the manifest itself in the cache manifest file, otherwise it
 		// will be nearly impossible to inform the browser a new manifest is available.
-		// Also don't specify plugins that are part of a composite in the manifest; these
-		// files are already bundled inside the composite and don't need to be also stored
-		// (in fact they are left out of the built prod app)
-		if (plugin.instanceOf(AppcacheContentPlugin.class) || plugin.getCompositeGroupName() != null)
+		// Also don't specify plugins that are part of a composite in the manifest in prod;
+		// these files are already bundled inside the composite file and don't need to be 
+		// also cached (in fact they are left out of the built prod app and cant be cached)
+		if (plugin.instanceOf(AppcacheContentPlugin.class) || (!isDev && plugin.getCompositeGroupName() != null))
 		{
 			return "";
 		}
