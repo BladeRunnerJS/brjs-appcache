@@ -40,13 +40,13 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
 
 ### Clone the repo and configure
 - Clone this repository.
-- Configure your BRJS root directory path. There are two ways you can specify the path:
-    - Pass it in to gradle with every build command by adding `-PbrjsPath=BRJS_DIRECTORY` to the command line. This is usually useful for automated builds, but is painful for development. A better way is to...
-    - Create a `./gradle.properties` file in the plugin root directory with the same property. This will apply to every run of the build. E.g.
-
+- Create a `./gradle.properties` file in the plugin root directory with the path to your BRJS root directory:
         ```
         brjsPath=BRJS_DIRECTORY
         ```
+
+    - Alternatively you can set the path by adding `-PbrjsPath=BRJS_DIRECTORY` to the command line arguments. This can be useful for things such as build scripts.
+
 
 ### Using Eclipse or IntelliJ IDEA 
 If you are using either Eclipse or IntelliJ IDEA for development, follow the instructions below to set up your project files
