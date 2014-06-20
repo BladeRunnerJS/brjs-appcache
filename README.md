@@ -41,9 +41,9 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
 ### Clone the repo and configure
 - Clone this repository.
 - Create a `./gradle.properties` file in the plugin root directory with the path to your BRJS root directory:
-        ```
-        brjsPath=BRJS_DIRECTORY
-        ```
+    ```
+    brjsPath=BRJS_DIRECTORY
+    ```
 
     - Alternatively you can set the path by adding `-PbrjsPath=BRJS_DIRECTORY` to the command line arguments. This can be useful for things such as build scripts.
 
@@ -66,11 +66,12 @@ If you are using either Eclipse or IntelliJ IDEA for development, follow the ins
 ## BRJS Compatability
 Ensure you use the correct version of the plugin for your BRJS version:
 
-Plugin       | BRJS
--------------|---------
-1.0.2        | 0.6-0.8
-1.0.1, 1.0.0 | 0.6-0.7
-Untested     | <= 0.5
-Unsupported  | >= 0.9
+Plugin         | BRJS
+---------------|---------
+[2.0.0](https://github.com/caplin/brjs-appcache/releases/tag/2.0.0)          | 0.10
+[1.0.2](https://github.com/caplin/brjs-appcache/releases/tag/1.0.2)          | 0.6-0.8
+[1.0.1](https://github.com/caplin/brjs-appcache/releases/tag/1.0.1), [1.0.0](https://github.com/caplin/brjs-appcache/releases/tag/1.0.0)   | 0.6-0.7
+Untested       | <= 0.5
+Unsupported *  | 0.9
 
-- BRJS 0.9 made some changes that prevent appcache from working. BRJS is [aware of the problem](https://github.com/BladeRunnerJS/brjs/issues/725).
+* BRJS 0.9 made some changes that prevent appcache from working. These were [fixed in BRJS 0.10](https://github.com/BladeRunnerJS/brjs/issues/725).
