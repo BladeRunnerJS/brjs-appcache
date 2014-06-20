@@ -7,7 +7,6 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
 - Copy the plugin JAR to the BRJS `conf/java` folder.
 - Copy the plugin JAR to the BRJS `apps/<your-app>/WEB-INF/lib` folder.
 - Add the appcache plugin tag to your HTML element e.g. `<html manifest="<@appcache.url@/>">`
-- That's it, your app is now appcache ready!
 
 > Remember it's *disabled in dev by default*, so you'll either need to [enable it in dev](#enableInDev) or build a prod version of your app to see the appcache in action.
 
