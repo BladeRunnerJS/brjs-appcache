@@ -69,9 +69,9 @@ Ensure you use the correct version of the plugin for your BRJS version:
 Plugin         | BRJS
 ---------------|---------
 [2.0.0](https://github.com/caplin/brjs-appcache/releases/tag/2.0.0)          | 0.10
+Unsupported *  | 0.9
 [1.0.2](https://github.com/caplin/brjs-appcache/releases/tag/1.0.2)          | 0.6-0.8
 [1.0.1](https://github.com/caplin/brjs-appcache/releases/tag/1.0.1), [1.0.0](https://github.com/caplin/brjs-appcache/releases/tag/1.0.0)   | 0.6-0.7
 Untested       | <= 0.5
-Unsupported *  | 0.9
 
 > \* BRJS 0.9 made some changes that prevent appcache from working. These were [fixed in BRJS 0.10](https://github.com/BladeRunnerJS/brjs/issues/725).
