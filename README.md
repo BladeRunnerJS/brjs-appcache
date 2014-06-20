@@ -22,11 +22,16 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
 ### Enabling
 - To link it in to your application the plugin provides the `appcache.url` tag handler. This tag will replaced with the URL to the manifest file, so you should set the `manifest` attribute on the `html` element to use the tag as its value. 
     - In other words your html element should look something like `<html manifest="<@appcache.url@/>">`
-- <a name="enableInDev"></a>In dev, the manifest URL is blank by default so the appcache will not be used.
-    - You can test the appcache in dev by manually specifying an appcache version in the config file. See the [Configuration](#configuration) section for details on how to do this.
-- In prod, the manifest URL is always generated and points to a valid manifest.
-    - The manifest will be given a new version every time you generate the prod files.
-    - The manifest can be given a specific version by specifying an appcache version in the config file. See the [Configuration](#configuration) section for details on how to do this.
+
+#### Dev
+<a name="enableInDev"></a>In dev, the manifest URL is blank by default so the appcache will not be used.
+
+- You can test the appcache in dev by manually specifying an appcache version in the config file. See the [Configuration](#configuration) section for details on how to do this.
+
+#### Prod
+In prod, the manifest URL is always generated and points to a valid manifest.
+- The manifest will be given a new version every time you generate the prod files.
+- The manifest can be given a specific version by specifying an appcache version in the config file. See the [Configuration](#configuration) section for details on how to do this.
 
 > The HTML `<base href="..." />` tag is incompatible with the appcache plugin. BRJS <= v0.8 applications by default are created with the base tag in `index.html`, so *this will need to be removed before the appcache plugin will work*. This is OK - the use of the base tag was added by bladerunner to replicate some of the appcache functionality, but now you're using the real thing you don't need it any more!
 
