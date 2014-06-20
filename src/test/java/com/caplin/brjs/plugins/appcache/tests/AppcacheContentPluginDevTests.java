@@ -7,6 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.caplin.brjs.plugins.appcache.mocks.MockCompositeContentPlugin;
 import com.caplin.brjs.plugins.appcache.mocks.MockContentPlugin;
 
 public class AppcacheContentPluginDevTests extends SpecTest
@@ -20,7 +21,7 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	{
 		given(brjs).automaticallyFindsBundlerPlugins()
 				.and(brjs).automaticallyFindsMinifierPlugins()
-				.and(brjs).hasContentPlugins(new MockContentPlugin())
+				.and(brjs).hasContentPlugins(new MockContentPlugin(), new MockCompositeContentPlugin())
 				.and(brjs).hasBeenCreated();
 		app = brjs.app("appcacheApp");
 		aspect = app.aspect("default");
@@ -116,5 +117,13 @@ public class AppcacheContentPluginDevTests extends SpecTest
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
 		when(app).requestReceived("static/appcache/dev.appcache", pageResponse);
 		then(pageResponse).containsText("NETWORK:");
+	}
+	
+	@Test
+	public void testCacheManifestDoesNotContainCompositeFiles() throws Exception
+	{
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+		when(app).requestReceived("static/appcache/dev.appcache", pageResponse);
+		then(pageResponse).doesNotContainText("compositeDev");
 	}
 }

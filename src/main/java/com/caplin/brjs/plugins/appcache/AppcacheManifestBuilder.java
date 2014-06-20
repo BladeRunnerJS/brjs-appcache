@@ -50,7 +50,7 @@ public class AppcacheManifestBuilder
 	 * @throws PropertiesException
 	 * @throws ContentProcessingException
 	 * @throws ConfigException
-	 * @throws MalformedTokenException 
+	 * @throws MalformedTokenException
 	 */
 	public String getManifest() throws PropertiesException, ContentProcessingException, ConfigException, MalformedTokenException
 	{
@@ -119,8 +119,11 @@ public class AppcacheManifestBuilder
 	private String getManifestCacheFilesForPlugin(ContentPlugin plugin, String[] languages) throws ContentProcessingException, MalformedTokenException
 	{
 		// Do not specify the manifest itself in the cache manifest file, otherwise it
-		// will be nearly impossible to inform the browser a new manifest is available
-		if (plugin.instanceOf(AppcacheContentPlugin.class))
+		// will be nearly impossible to inform the browser a new manifest is available.
+		// Also don't specify plugins that are part of a composite in the manifest; these
+		// files are already bundled inside the composite and don't need to be also stored
+		// (in fact they are left out of the built prod app)
+		if (plugin.instanceOf(AppcacheContentPlugin.class) || plugin.getCompositeGroupName() != null)
 		{
 			return "";
 		}

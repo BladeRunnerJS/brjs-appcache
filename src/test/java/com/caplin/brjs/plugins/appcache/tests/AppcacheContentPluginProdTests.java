@@ -129,4 +129,12 @@ public class AppcacheContentPluginProdTests extends SpecTest
 		when(app).requestReceived("static/appcache/prod.appcache", pageResponse);
 		then(pageResponse).containsText("NETWORK:");
 	}
+	
+	@Test
+	public void testCacheManifestDoesNotContainCompositeFiles() throws Exception
+	{
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+		when(app).requestReceived("static/appcache/prod.appcache", pageResponse);
+		then(pageResponse).doesNotContainText("compositeProd");
+	}
 }
