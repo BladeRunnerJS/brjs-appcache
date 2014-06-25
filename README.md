@@ -8,14 +8,14 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
 - Add the appcache plugin tag to your HTML element e.g. `<html manifest="<@appcache.url@/>">`
 - That's it, your app is now appcache ready!
 
-> Remember it's *disabled in dev by default*, so you'll either need to [enable it in dev](#enableInDev) or deploy your app as a WAR to see the appcache in action.
+> Remember it's *disabled in dev by default*, so you'll either need to [enable it in dev](#enableInDev) or build a prod version of your app to see the appcache in action.
 
 ## Usage
 
 ### Installation
 - Copy the plugin JAR to the `apps/<your-app>/WEB-INF/lib` folder for any apps you want to use the plugin.
 
-> This is a requirement of BRJS v0.6, in the future the plugin deployment process may change.
+> This is a requirement of BRJS <= v0.9, in the future the plugin deployment process may change.
 
 ### Enabling
 - To link it in to your application the plugin provides the `appcache.url` tag handler. This tag will replaced with the URL to the manifest file, so you should set the `manifest` attribute on the `html` element to use the tag as its value. 
@@ -26,7 +26,7 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
     - The manifest will be given a new version every time you generate the prod files.
     - The manifest can be given a specific version by specifying an appcache version in the config file. See the [Configuration](#configuration) section for details on how to do this.
 
-> The HTML `<base href="..." />` tag is incompatible with the appcache plugin. BRJS applications by default are created with the base tag in `index.html`, so *this will need to be removed before the appcache plugin will work*. This is OK - the use of the base tag was added by bladerunner to replicate some of the appcache functionality, but now you're using the real thing you don't need it any more!
+> The HTML `<base href="..." />` tag is incompatible with the appcache plugin. BRJS <= v0.8 applications by default are created with the base tag in `index.html`, so *this will need to be removed before the appcache plugin will work*. This is OK - the use of the base tag was added by bladerunner to replicate some of the appcache functionality, but now you're using the real thing you don't need it any more!
 
 <a name="configuration"></a>
 ### Configuration
@@ -39,10 +39,13 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
 
 ### Clone the repo and configure
 - Clone this repository.
-- Configure the path to your BladeRunnerJS directory in `./gradle.properties` e.g.
-```
-brjsPath=C:/development/brjs
-```
+- Configure your BRJS root directory path. There are two ways you can specify the path:
+    - Pass it in to gradle with every build command by adding `-PbrjsPath=BRJS_DIRECTORY` to the command line. This is usually useful for automated builds, but is painful for development. A better way is to...
+    - Create a `./gradle.properties` file in the plugin root directory with the same property. This will apply to every run of the build. E.g.
+
+        ```
+        brjsPath=BRJS_DIRECTORY
+        ```
 
 ### Using Eclipse or IntelliJ IDEA 
 If you are using either Eclipse or IntelliJ IDEA for development, follow the instructions below to set up your project files
@@ -57,3 +60,18 @@ If you are using either Eclipse or IntelliJ IDEA for development, follow the ins
 - Run `./gradlew build` to build and test your plugin.
 - Once the build has passed, your generated plugin JAR is placed in the project `build/lib` directory.
 - You can run `./gradlew copyToBrjs` to automatically copy your jar to the `apps/<your-app>/WEB-INF/lib` directories to be picked up by BRJS.
+
+
+## BRJS Compatability
+Ensure you use the correct version of the plugin for your BRJS version:
+
+Plugin       | BRJS
+-------------|---------
+1.0.2        | 0.6-0.8
+1.0.1, 1.0.0 | 0.6-0.7
+Untested     | <= 0.5
+Unsupported  | >= 0.9
+
+- BRJS 0.9 made some changes that prevent appcache from working. BRJS is [aware of the problem](https://github.com/BladeRunnerJS/brjs/issues/725).
+
+> Developers should branch from the 1.0.2 tag for stable development. The current state of master is for BRJS 0.9 support.

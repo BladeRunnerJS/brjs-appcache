@@ -1,7 +1,5 @@
 package com.caplin.brjs.plugins.appcache;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
@@ -11,7 +9,6 @@ import org.bladerunnerjs.model.exception.PropertiesException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 
-
 /**
  * Builds manifest file strings based on a given set of parameters.
  */
@@ -20,25 +17,27 @@ public class AppcacheManifestBuilder
 	private BRJS brjs;
 	private BundleSet bundleSet;
 	private AppcacheConf config;
+	private String brjsVersion;
 	private boolean isDev;
 
 	/**
 	 * Creates an {@link AppcacheManifestBuilder} instance for generating prod manifest files.
 	 */
-	public AppcacheManifestBuilder(BRJS brjs, BundleSet bundleSet, AppcacheConf config)
+	public AppcacheManifestBuilder(BRJS brjs, BundleSet bundleSet, AppcacheConf config, String brjsVersion)
 	{
-		this(brjs, bundleSet, config, false);
+		this(brjs, bundleSet, config, brjsVersion, false);
 	}
 
 	/**
 	 * Creates an {@link AppcacheManifestBuilder} instance for generating prod or dev manifest
 	 * files, depending on the value of the isDev parameter.
 	 */
-	public AppcacheManifestBuilder(BRJS brjs, BundleSet bundleSet, AppcacheConf config, boolean isDev)
+	public AppcacheManifestBuilder(BRJS brjs, BundleSet bundleSet, AppcacheConf config, String brjsVersion, boolean isDev)
 	{
 		this.brjs = brjs;
 		this.bundleSet = bundleSet;
 		this.config = config;
+		this.brjsVersion = brjsVersion;
 		this.isDev = isDev;
 	}
 
@@ -72,18 +71,23 @@ public class AppcacheManifestBuilder
 
 	/**
 	 * Generates a version number to use for the manifest. The version is generated from either:
-	 * 1) The config file
-	 * 2) The node properties
+	 * 1) The config file if not empty
+	 * 2) The BRJS version if not in dev
 	 * 3) Empty string fallback
 	 */
 	private String getManifestVersion() throws PropertiesException
 	{
-		String version = config.getVersion();
-		if (version == null || version.trim().isEmpty())
+		String version;
+
+		if (config.getVersion() != null && !config.getVersion().trim().isEmpty())
 		{
-			version = bundleSet.getBundlableNode().nodeProperties("appcache").getPersisentProperty("version");
+			version = config.getVersion();
 		}
-		if (version == null)
+		else if (!isDev)
+		{
+			version = brjsVersion;
+		}
+		else
 		{
 			version = "";
 		}
@@ -135,22 +139,14 @@ public class AppcacheManifestBuilder
 	 */
 	private String[] getConfiguredLocales() throws ConfigException
 	{
-		String localeConfig = bundleSet.getBundlableNode().app().appConf().getLocales();
-		List<String> splitLocales = new ArrayList<String>(Arrays.asList(localeConfig.split(",")));
-		int i = 0;
-		for (String language : splitLocales)
-		{
-			splitLocales.set(i, language.trim());
-			++i;
-		}
-		splitLocales.removeAll(Arrays.asList(""));
+		String[] locales = bundleSet.getBundlableNode().app().appConf().getLocales();
 
-		if (splitLocales.size() == 0)
+		if (locales.length == 0)
 		{
-			splitLocales.add("en");
+			locales = new String[] { "en" };
 		}
 
-		return splitLocales.toArray(new String[splitLocales.size()]);
+		return locales;
 	}
 
 	/**
