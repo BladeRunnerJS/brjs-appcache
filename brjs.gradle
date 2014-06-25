@@ -1,0 +1,79 @@
+/**
+ * Build commands for testing against the latest BRJS develop branch
+ */
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.ajoberstar:gradle-git:0.9.0'
+    }
+}
+
+import org.ajoberstar.grgit.*
+import org.ajoberstar.grgit.operation.ResetOp;
+
+task cloneBrjs, type:Exec, {
+    commandLine 'git', 'clone', 'https://github.com/BladeRunnerJS/brjs.git', "${buildDir}/brjs-source"
+}
+cloneBrjs.onlyIf {
+    !file("${buildDir}/brjs-source").exists()
+}
+
+task fetchBrjs, type:Exec, dependsOn: cloneBrjs, {
+    workingDir file("${buildDir}/brjs-source")
+    commandLine 'git', 'fetch'
+}
+
+def getCheckoutVersion = {
+    if(project.hasProperty("brjsVersion")) {
+        return project.property("brjsVersion")
+    } else {
+        return "master"
+    }
+}
+
+task checkoutBrjsVersion, type:Exec, dependsOn: fetchBrjs, {
+    workingDir file("${buildDir}/brjs-source")
+    commandLine 'git', 'checkout', '-f', getCheckoutVersion()
+}
+
+task brjsSubmoduleInit, type:Exec, dependsOn: checkoutBrjsVersion, {
+    workingDir file("${buildDir}/brjs-source")
+    commandLine 'git', 'submodule', 'init'
+}
+
+task brjsSubmoduleUpdate, type:Exec, dependsOn: brjsSubmoduleInit, {
+    workingDir file("${buildDir}/brjs-source")
+    commandLine 'git', 'submodule', 'update'
+}
+
+task buildBrjs, type:Exec, dependsOn: brjsSubmoduleUpdate, {
+    inputs.dir file("${buildDir}/brjs-source")
+    outputs.files files { file("${buildDir}/brjs-source/cutlass-sdk/build/distributions").listFiles() }
+
+    workingDir file("${buildDir}/brjs-source/cutlass-sdk")
+    def extension = ""
+    if (System.properties['os.name'].toLowerCase().contains('windows')) {
+        extension = ".bat"
+    }
+    def gradlew = new File(workingDir, "../gradlew" + extension)
+    commandLine gradlew.getCanonicalPath(), 'distzip'
+}
+
+task deployBrjs, type:Copy, dependsOn: buildBrjs, {
+    inputs.file tasks.buildBrjs.outputs.files.singleFile
+    from zipTree( tasks.buildBrjs.outputs.files.singleFile )
+    into "${buildDir}"
+}
+
+task useDeployedBrjs, dependsOn: deployBrjs, {
+    inputs.dir tasks.deployBrjs.outputs.files.singleFile
+    project.brjsPath = new File(tasks.deployBrjs.outputs.files.singleFile, "BladeRunnerJS").getCanonicalPath()
+}
+
+task testAgainstBrjs, dependsOn: useDeployedBrjs, {
+}
+testAgainstBrjs.finalizedBy test
