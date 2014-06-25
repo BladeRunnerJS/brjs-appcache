@@ -16,7 +16,7 @@ public class AppcacheTagHandlerPluginProdTests extends SpecTest
 	@Before
 	public void setUp() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers().and(brjs).hasBeenCreated();
+		given(brjs).automaticallyFindsBundlerPlugins().and(brjs).hasBeenCreated();
 		app = brjs.app("appcacheApp");
 		aspect = app.aspect("default");
 	}
@@ -36,7 +36,7 @@ public class AppcacheTagHandlerPluginProdTests extends SpecTest
 
 		when(aspect).indexPageLoadedInProd(pageResponse, "en");
 
-		then(pageResponse).containsText("manifest='appcache/prod.appcache'");
+		then(pageResponse).containsText("manifest='../static/appcache/prod.appcache'");
 	}
 
 	@Test
@@ -47,7 +47,7 @@ public class AppcacheTagHandlerPluginProdTests extends SpecTest
 
 		when(aspect).indexPageLoadedInProd(pageResponse, "en");
 
-		then(pageResponse).containsText("manifest='appcache/prod.appcache'");
+		then(pageResponse).containsText("manifest='../static/appcache/prod.appcache'");
 	}
 
 	@Test
@@ -58,7 +58,7 @@ public class AppcacheTagHandlerPluginProdTests extends SpecTest
 
 		when(aspect).indexPageLoadedInProd(pageResponse, "en");
 
-		then(pageResponse).containsText("manifest='appcache/prod.appcache'");
+		then(pageResponse).containsText("manifest='../static/appcache/prod.appcache'");
 	}
 
 	@Test
@@ -69,6 +69,6 @@ public class AppcacheTagHandlerPluginProdTests extends SpecTest
 
 		when(aspect).indexPageLoadedInProd(pageResponse, "en");
 
-		then(pageResponse).containsText("manifest='appcache/prod.appcache'");
+		then(pageResponse).containsText("manifest='../static/appcache/prod.appcache'");
 	}
 }

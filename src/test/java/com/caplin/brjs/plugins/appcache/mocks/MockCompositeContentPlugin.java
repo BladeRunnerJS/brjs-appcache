@@ -13,7 +13,7 @@ import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
-public class MockContentPlugin extends AbstractContentPlugin
+public class MockCompositeContentPlugin extends AbstractContentPlugin
 {
 	@Override
 	public void setBRJS(BRJS brjs)
@@ -23,13 +23,13 @@ public class MockContentPlugin extends AbstractContentPlugin
 	@Override
 	public String getRequestPrefix()
 	{
-		return "mock";
+		return "mockComposite";
 	}
 
 	@Override
 	public String getCompositeGroupName()
 	{
-		return null;
+		return "composite";
 	}
 
 	@Override
@@ -59,12 +59,12 @@ public class MockContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
-		return Arrays.asList(new String[] { "devMock", "devSpace Mock" });
+		return Arrays.asList(new String[] {"compositeDev"});
 	}
 
 	@Override
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
-		return Arrays.asList(new String[] { "prodMock", "prodSpace Mock" });
+		return Arrays.asList(new String[] {"compositeProd"});
 	}
 }

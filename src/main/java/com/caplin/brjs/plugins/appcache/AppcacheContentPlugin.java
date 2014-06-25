@@ -1,7 +1,6 @@
 package com.caplin.brjs.plugins.appcache;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -9,6 +8,7 @@ import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.ContentOutputStream;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.PropertiesException;
@@ -30,8 +30,8 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		// @formatter:off
-		contentPathParserBuilder.accepts("appcache/dev.appcache").as("dev-appcache-request")
-		                        .and("appcache/prod.appcache").as("prod-appcache-request");
+		contentPathParserBuilder.accepts("/appcache/dev.appcache").as("dev-appcache-request")
+		                        .and("/appcache/prod.appcache").as("prod-appcache-request");
 		// @formatter:on
 
 		contentPathParser = contentPathParserBuilder.build();
@@ -86,7 +86,7 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os, String version) throws ContentProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException
 	{
 		if (!contentPath.formName.equals("dev-appcache-request") && !contentPath.formName.equals("prod-appcache-request"))
 		{
@@ -102,7 +102,7 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 
 			writer.write(manifest);
 		}
-		catch (IOException | ConfigException | PropertiesException e)
+		catch (IOException | ConfigException | PropertiesException | MalformedTokenException e)
 		{
 			throw new ContentProcessingException(e);
 		}

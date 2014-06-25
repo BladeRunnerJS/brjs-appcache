@@ -12,7 +12,6 @@ import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 
-
 /**
  * Generates an appcache manifest URL when the "appcache.url" tag is used.
  */
@@ -34,10 +33,11 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 		try
 		{
 			String appcacheVersion = getConfiguredVersion(bundleSet.getBundlableNode());
-			// We enable appcache in dev by populating the tag if there's a config file with a version specified
+			// We enable appcache in dev by populating the tag if there's a config file with a
+			// version specified
 			if (appcacheVersion != null)
 			{
-				writer.write(contentPathParser.createRequest("dev-appcache-request"));
+				writer.write("../static" + contentPathParser.createRequest("dev-appcache-request"));
 				devAppcachePreviouslyEnabled = true;
 			}
 			else if (devAppcachePreviouslyEnabled)
@@ -60,7 +60,7 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 	{
 		try
 		{
-			writer.write(contentPathParser.createRequest("prod-appcache-request"));
+			writer.write("../static" + contentPathParser.createRequest("prod-appcache-request"));
 		}
 		catch (MalformedTokenException e)
 		{
@@ -71,11 +71,12 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		this.contentPathParser = brjs.plugins().contentProvider("appcache").getContentPathParser();
+		this.contentPathParser = brjs.plugins().contentPlugin("appcache").getContentPathParser();
 	}
 
 	/**
-	 * Gets the appcache manifest version as configured in the appcache.conf file. If no version is configured this method will return null.
+	 * Gets the appcache manifest version as configured in the appcache.conf file. If no version is
+	 * configured this method will return null.
 	 * 
 	 * @param node
 	 *            The BRJSNode that the config should be retrieved for
