@@ -4,6 +4,8 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'java'
 
+apply from: 'brjs.gradle'
+
 dependencies {
 	compile fileTree(dir:brjsPath, include:"sdk/libs/java/system/*.jar")
 	testCompile fileTree(dir:"${projectDir}/libs", include:"*.jar")
