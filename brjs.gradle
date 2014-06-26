@@ -60,10 +60,6 @@ task buildBrjs, type:Exec, dependsOn: brjsSubmoduleUpdate, {
     commandLine gradlew.getCanonicalPath(), 'assemble'
 }
 
-task useDeployedBrjs, dependsOn: buildBrjs, {
+task useBrjsVersion, dependsOn: buildBrjs, {
     project.brjsPath = file("${buildDir}/brjs-source/cutlass-sdk/workspace").getCanonicalPath()
 }
-
-task testAgainstBrjs, dependsOn: useDeployedBrjs, {
-}
-testAgainstBrjs.finalizedBy test
