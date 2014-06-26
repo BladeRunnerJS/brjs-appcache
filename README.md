@@ -55,7 +55,9 @@ In prod, the manifest URL is always generated and points to a valid manifest.
 
 > If you don't have a local BRJS install you can prefix any of the gradle build commands with the `getBrjs` task. This will download the latest version of BRJS from the [BRJS GitHub](https://github.com/BladeRunnerJS/brjs) `master` branch and use that version when running all following commands. You can also supply the `brjsVersion` gradle property to use a version other than `master`. The value of the `brjsVersion` property is passed straight into `git checkout` so can be any valid git identifier (e.g. commit hashes, branch names, tag names).
 
-> For example to test the plugin against BRJS tag `v0.9` you would run `./gradlew getBrjs test -PbrjsVersion=v0.9`
+> For example to test the plugin against BRJS tag `v0.9` you would run:
+
+> `./gradlew getBrjs test -PbrjsVersion=v0.9`
 
 ### Using Eclipse or IntelliJ IDEA 
 If you are using either Eclipse or IntelliJ IDEA for development, follow the instructions below to set up your project files
