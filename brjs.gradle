@@ -71,5 +71,5 @@ task buildBrjs, type:Exec, dependsOn: brjsSubmoduleUpdate, {
 }
 
 task getBrjs, dependsOn: buildBrjs, {
-    project.brjsPath = file("${buildDir}/brjs-source/cutlass-sdk/workspace").getCanonicalPath()
+    project.brjsPath = file("${buildDir}/brjs-source/brjs-sdk/workspace").getCanonicalPath()
 }
