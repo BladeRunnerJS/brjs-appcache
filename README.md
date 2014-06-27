@@ -59,6 +59,8 @@ In prod, the manifest URL is always generated and points to a valid manifest.
 
 > `./gradlew getBrjs test -PbrjsVersion=v0.9`
 
+> Note that as this tries to build BRJS from source, it's dependent on certain parts of the BRJS build and may not work with older versions of BRJS. You'll also need to ensure your PC meets the requirements for [building BRJS](https://github.com/BladeRunnerJS/brjs#brjs-core-toolkit-development).
+
 ### Using Eclipse or IntelliJ IDEA 
 If you are using either Eclipse or IntelliJ IDEA for development, follow the instructions below to set up your project files
 

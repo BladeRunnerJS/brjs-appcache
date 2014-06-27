@@ -27,6 +27,11 @@ task fetchBrjs, type:Exec, dependsOn: cloneBrjs, {
     commandLine 'git', 'fetch'
 }
 
+task brjsSubmoduleDeInit, type:Exec, dependsOn: cloneBrjs, {
+    workingDir file("${buildDir}/brjs-source")
+    commandLine 'git', 'submodule', 'deinit', '.'
+}
+
 def getCheckoutVersion = {
     if(project.hasProperty("brjsVersion")) {
         return project.property("brjsVersion")
@@ -35,7 +40,7 @@ def getCheckoutVersion = {
     }
 }
 
-task checkoutBrjsVersion, type:Exec, dependsOn: fetchBrjs, {
+task checkoutBrjsVersion, type:Exec, dependsOn: [fetchBrjs, brjsSubmoduleDeInit], {
     workingDir file("${buildDir}/brjs-source")
     commandLine 'git', 'checkout', '-f', getCheckoutVersion()
 }
@@ -45,13 +50,18 @@ task brjsSubmoduleInit, type:Exec, dependsOn: checkoutBrjsVersion, {
     commandLine 'git', 'submodule', 'init'
 }
 
-task brjsSubmoduleUpdate, type:Exec, dependsOn: brjsSubmoduleInit, {
+task brjsSubmoduleSync, type:Exec, dependsOn: brjsSubmoduleInit, {
+    workingDir file("${buildDir}/brjs-source")
+    commandLine 'git', 'submodule', 'sync'
+}
+
+task brjsSubmoduleUpdate, type:Exec, dependsOn: brjsSubmoduleSync, {
     workingDir file("${buildDir}/brjs-source")
     commandLine 'git', 'submodule', 'update'
 }
 
 task buildBrjs, type:Exec, dependsOn: brjsSubmoduleUpdate, {
-    workingDir file("${buildDir}/brjs-source/cutlass-sdk")
+    workingDir file("${buildDir}/brjs-source/brjs-sdk")
     def extension = ""
     if (System.properties['os.name'].toLowerCase().contains('windows')) {
         extension = ".bat"
