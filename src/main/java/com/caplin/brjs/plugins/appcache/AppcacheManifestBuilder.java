@@ -10,6 +10,7 @@ import org.bladerunnerjs.model.exception.PropertiesException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.ContentPlugin;
+import org.bladerunnerjs.plugin.Locale;
 
 /**
  * Builds manifest file strings based on a given set of parameters.
@@ -104,7 +105,7 @@ public class AppcacheManifestBuilder
 		cacheFiles.append("CACHE:\n");
 
 		// See #getContentPaths for an explanation on why we need configured languages
-		String[] languages = getConfiguredLocales();
+		Locale[] languages = getConfiguredLocales();
 		for (ContentPlugin plugin : brjs.plugins().contentPlugins())
 		{
 			String pluginCacheFiles = getManifestCacheFilesForPlugin(plugin, languages);
@@ -116,12 +117,12 @@ public class AppcacheManifestBuilder
 		return cacheFiles.toString();
 	}
 
-	private String getManifestCacheFilesForPlugin(ContentPlugin plugin, String[] languages) throws ContentProcessingException, MalformedTokenException
+	private String getManifestCacheFilesForPlugin(ContentPlugin plugin, Locale[] languages) throws ContentProcessingException, MalformedTokenException
 	{
 		// Do not specify the manifest itself in the cache manifest file, otherwise it
 		// will be nearly impossible to inform the browser a new manifest is available.
 		// Also don't specify plugins that are part of a composite in the manifest in prod;
-		// these files are already bundled inside the composite file and don't need to be 
+		// these files are already bundled inside the composite file and don't need to be
 		// also cached (in fact they are left out of the built prod app and cant be cached)
 		if (plugin.instanceOf(AppcacheContentPlugin.class) || (!isDev && plugin.getCompositeGroupName() != null))
 		{
@@ -146,13 +147,14 @@ public class AppcacheManifestBuilder
 	 * Gets the list of configured languages from the config file. If none are configured a default
 	 * of "en" will be used
 	 */
-	private String[] getConfiguredLocales() throws ConfigException
+	private Locale[] getConfiguredLocales() throws ConfigException
 	{
-		String[] locales = bundleSet.getBundlableNode().app().appConf().getLocales();
+		Locale[] locales = bundleSet.getBundlableNode().app().appConf().getLocales();
 
 		if (locales.length == 0)
 		{
-			locales = new String[] { "en" };
+
+			locales = new Locale[] { new Locale("en") };
 		}
 
 		return locales;
@@ -161,7 +163,7 @@ public class AppcacheManifestBuilder
 	/**
 	 * Gets the content paths provided by a particular plugin, for a given set of locales.
 	 */
-	private List<String> getContentPaths(ContentPlugin plugin, String[] languages) throws ContentProcessingException
+	private List<String> getContentPaths(ContentPlugin plugin, Locale[] languages) throws ContentProcessingException
 	{
 		// TODO Any language-specific files requested by browsers set to a language not in the
 		// locale list will not appear in the appcache manifest, and will not be cached. The
