@@ -6,10 +6,11 @@ import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
 import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.Locale;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
@@ -52,10 +53,6 @@ public class MockCompositeContentPlugin extends AbstractContentPlugin
 		return contentPathParserBuilder.build();
 	}
 
-	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException
-	{
-	}
 
 	@Override
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
@@ -67,5 +64,10 @@ public class MockCompositeContentPlugin extends AbstractContentPlugin
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
 	{
 		return Arrays.asList(new String[] { "compositeProd" });
+	}
+
+	@Override
+	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
+		return null;
 	}
 }

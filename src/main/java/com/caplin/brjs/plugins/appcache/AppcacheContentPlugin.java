@@ -1,20 +1,19 @@
 package com.caplin.brjs.plugins.appcache;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
 import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.PropertiesException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.plugin.CharResponseContent;
 import org.bladerunnerjs.plugin.Locale;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
@@ -74,7 +73,6 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 		return new ArrayList<String>();
 	}
 
-	@Override
 	public List<String> getPluginsThatMustAppearAfterThisPlugin()
 	{
 		return new ArrayList<String>();
@@ -87,26 +85,26 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException
+	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor urlContent, String version) throws ContentProcessingException
 	{
 		if (!contentPath.formName.equals("dev-appcache-request") && !contentPath.formName.equals("prod-appcache-request"))
 		{
 			throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
 		}
-
-		try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
-		{
-			AppcacheConf config = new AppcacheConf(bundleSet.getBundlableNode());
+		
+		AppcacheConf config;
+		String manifest = null;
+		try {
+			config = new AppcacheConf(bundleSet.getBundlableNode());
 			boolean isDev = contentPath.formName.equals("dev-appcache-request");
 			AppcacheManifestBuilder manifestBuilder = new AppcacheManifestBuilder(brjs, bundleSet, config, version, isDev);
-			String manifest = manifestBuilder.getManifest();
-
-			writer.write(manifest);
-		}
-		catch (IOException | ConfigException | PropertiesException | MalformedTokenException e)
-		{
-			throw new ContentProcessingException(e);
-		}
+			manifest = manifestBuilder.getManifest();
+			
+		} catch (ConfigException | PropertiesException | MalformedTokenException e) {
+			e.printStackTrace();
+		}		
+		return new CharResponseContent(bundleSet.getBundlableNode().root(), manifest);
+		
 	}
 
 	/**************************************
