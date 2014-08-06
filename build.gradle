@@ -5,7 +5,7 @@ apply plugin: 'idea'
 apply plugin: 'java'
 
 dependencies {
-	compile fileTree(dir:brjsPath, include:"sdk/libs/java/system/*.jar")
+	compile fileTree(dir:brjsPath, include:"brjs-sdk/workspace/sdk/libs/java/system/*.jar")
 	testCompile fileTree(dir:"${projectDir}/libs", include:"*.jar")
 }
 
