@@ -69,7 +69,7 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 
 		when(aspect).indexPageLoadedInDev(pageResponse, "en");
 
-		then(pageResponse).containsText("manifest='../static/appcache/dev.appcache'");
+		then(pageResponse).containsText("manifest='../appcache/dev.appcache'");
 	}
 	
 	@Test

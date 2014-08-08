@@ -38,7 +38,7 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 			// version specified
 			if (appcacheVersion != null)
 			{
-				writer.write("../static" + contentPathParser.createRequest("dev-appcache-request"));
+				writer.write(".." + contentPathParser.createRequest("dev-appcache-request"));
 				devAppcachePreviouslyEnabled = true;
 			}
 			else if (devAppcachePreviouslyEnabled)
@@ -61,7 +61,7 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 	{
 		try
 		{
-			writer.write("../static" + contentPathParser.createRequest("prod-appcache-request"));
+			writer.write(".." + contentPathParser.createRequest("prod-appcache-request"));
 		}
 		catch (MalformedTokenException e)
 		{

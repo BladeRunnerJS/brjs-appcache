@@ -36,7 +36,7 @@ public class AppcacheTagHandlerPluginProdTests extends SpecTest
 
 		when(aspect).indexPageLoadedInProd(pageResponse, "en");
 
-		then(pageResponse).containsText("manifest='../static/appcache/prod.appcache'");
+		then(pageResponse).containsText("manifest='../appcache/prod.appcache'");
 	}
 
 	@Test
@@ -47,7 +47,7 @@ public class AppcacheTagHandlerPluginProdTests extends SpecTest
 
 		when(aspect).indexPageLoadedInProd(pageResponse, "en");
 
-		then(pageResponse).containsText("manifest='../static/appcache/prod.appcache'");
+		then(pageResponse).containsText("manifest='../appcache/prod.appcache'");
 	}
 
 	@Test
@@ -58,7 +58,7 @@ public class AppcacheTagHandlerPluginProdTests extends SpecTest
 
 		when(aspect).indexPageLoadedInProd(pageResponse, "en");
 
-		then(pageResponse).containsText("manifest='../static/appcache/prod.appcache'");
+		then(pageResponse).containsText("manifest='../appcache/prod.appcache'");
 	}
 
 	@Test
@@ -69,6 +69,6 @@ public class AppcacheTagHandlerPluginProdTests extends SpecTest
 
 		when(aspect).indexPageLoadedInProd(pageResponse, "en");
 
-		then(pageResponse).containsText("manifest='../static/appcache/prod.appcache'");
+		then(pageResponse).containsText("manifest='../appcache/prod.appcache'");
 	}
 }
