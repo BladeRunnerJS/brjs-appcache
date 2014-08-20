@@ -99,18 +99,22 @@ public class AppcacheManifestBuilder
 		return version;
 	}
 
-	private String getManifestCacheFiles() throws ContentProcessingException, ConfigException, MalformedTokenException
-	{
+	private String getManifestCacheFiles() throws ContentProcessingException, ConfigException, MalformedTokenException, PropertiesException {
 		StringBuilder cacheFiles = new StringBuilder();
 		cacheFiles.append("CACHE:\n");
 
-		// See #getContentPaths for an explanation on why we need configured languages
-		Locale[] languages = getConfiguredLocales();
-		for (ContentPlugin plugin : brjs.plugins().contentPlugins())
-		{
-			String pluginCacheFiles = getManifestCacheFilesForPlugin(plugin, languages);
-			cacheFiles.append(pluginCacheFiles);
-		}
+        // If the version is empty, then the appcache should be disabled. We're only refreshing the manifest so that
+        // the new index page without the manifest attribute will be picked up, and we don't really want it to re-cache
+        // all the other files, so we leave them out of the manifest
+        if(!getManifestVersion().equals("")) {
+            // See #getContentPaths for an explanation on why we need configured languages
+            Locale[] languages = getConfiguredLocales();
+            for (ContentPlugin plugin : brjs.plugins().contentPlugins())
+            {
+                String pluginCacheFiles = getManifestCacheFilesForPlugin(plugin, languages);
+                cacheFiles.append(pluginCacheFiles);
+            }
+        }
 
 		cacheFiles.append("\n");
 

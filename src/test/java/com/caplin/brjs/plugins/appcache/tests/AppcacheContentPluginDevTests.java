@@ -90,7 +90,8 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	@Test
 	public void testCacheManifestContainsDevMockContent() throws Exception
 	{
-		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
 		when(app).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).containsText("../v/dev/devMock");
 	}
@@ -98,7 +99,8 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	@Test
 	public void testCacheManifestContainsDevMockContentWithSpaceReplaced() throws Exception
 	{
-		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
 		when(app).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).containsText("../v/dev/devSpace%20Mock");
 	}
@@ -106,7 +108,8 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	@Test
 	public void testCacheManifestDoesNotContainItself() throws Exception
 	{
-		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
 		when(app).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).doesNotContainText("appcache/dev.appcache");
 	}
@@ -122,8 +125,35 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	@Test
 	public void testCacheManifestDoesContainCompositeFiles() throws Exception
 	{
-		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
 		when(app).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).containsText("../v/dev/compositeDev");
+	}
+
+	@Test
+	public void testCacheManifestDoesNotContainDevMockContentWhenNoConfig() throws Exception
+	{
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+		when(app).requestReceived("appcache/dev.appcache", pageResponse);
+		then(pageResponse).doesNotContainText("../v/dev/devMock");
+	}
+
+	@Test
+	public void testCacheManifestDoesNotContainDevMockContentWhenEmptyConfig() throws Exception
+	{
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "");
+		when(app).requestReceived("appcache/dev.appcache", pageResponse);
+		then(pageResponse).doesNotContainText("../v/dev/devMock");
+	}
+
+	@Test
+	public void testCacheManifestDoesNotContainDevMockContentWhenBlankConfig() throws Exception
+	{
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: ");
+		when(app).requestReceived("appcache/dev.appcache", pageResponse);
+		then(pageResponse).doesNotContainText("../v/dev/devMock");
 	}
 }
