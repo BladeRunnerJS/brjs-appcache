@@ -9,6 +9,10 @@ dependencies {
 	testCompile fileTree(dir:"${projectDir}/libs", include:"*.jar")
 }
 
+test {
+	jvmArgs "-XX:MaxPermSize=512m"
+}
+
 task copyToConf, type: Copy, dependsOn: jar, {
 	def brjsConfJavaDir = new File("${brjsPath}/conf/java")
 	from jar.outputs.files.singleFile
