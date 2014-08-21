@@ -80,7 +80,7 @@ Ensure you use the correct version of the plugin for your BRJS version:
 
 Plugin | BRJS
 -------|-----
-[2.0.0](https://github.com/caplin/brjs-appcache/releases/tag/2.0.0)+ | 0.10+
+[2.0.0+](https://github.com/caplin/brjs-appcache/releases/latest) | 0.10+
 Unsupported * | 0.9
 [1.0.2](https://github.com/caplin/brjs-appcache/releases/tag/1.0.2) | 0.6-0.8
 [1.0.1](https://github.com/caplin/brjs-appcache/releases/tag/1.0.1), [1.0.0](https://github.com/caplin/brjs-appcache/releases/tag/1.0.0) | 0.6-0.7
