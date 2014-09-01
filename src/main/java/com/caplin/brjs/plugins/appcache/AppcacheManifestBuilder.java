@@ -19,28 +19,28 @@ public class AppcacheManifestBuilder
 {
 	private BRJS brjs;
 	private BundleSet bundleSet;
-	private AppcacheConf config;
+	private String version;
 	private String brjsVersion;
 	private boolean isDev;
 
 	/**
 	 * Creates an {@link AppcacheManifestBuilder} instance for generating prod manifest files.
 	 */
-	public AppcacheManifestBuilder(BRJS brjs, BundleSet bundleSet, AppcacheConf config, String brjsVersion)
+	public AppcacheManifestBuilder(BRJS brjs, BundleSet bundleSet, String brjsVersion, String version)
 	{
-		this(brjs, bundleSet, config, brjsVersion, false);
+		this(brjs, bundleSet, brjsVersion, version, false);
 	}
 
 	/**
 	 * Creates an {@link AppcacheManifestBuilder} instance for generating prod or dev manifest
 	 * files, depending on the value of the isDev parameter.
 	 */
-	public AppcacheManifestBuilder(BRJS brjs, BundleSet bundleSet, AppcacheConf config, String brjsVersion, boolean isDev)
+	public AppcacheManifestBuilder(BRJS brjs, BundleSet bundleSet, String brjsVersion, String version, boolean isDev)
 	{
 		this.brjs = brjs;
 		this.bundleSet = bundleSet;
-		this.config = config;
-		this.brjsVersion = brjsVersion;
+        this.brjsVersion = brjsVersion;
+		this.version = version;
 		this.isDev = isDev;
 	}
 
@@ -69,34 +69,7 @@ public class AppcacheManifestBuilder
 
 	private String getManifestHeader() throws PropertiesException
 	{
-		String version = getManifestVersion();
 		return "CACHE MANIFEST\n# v" + version + "\n\n";
-	}
-
-	/**
-	 * Generates a version number to use for the manifest. The version is generated from either:
-	 * 1) The config file if not empty
-	 * 2) The BRJS version if not in dev
-	 * 3) Empty string fallback
-	 */
-	private String getManifestVersion() throws PropertiesException
-	{
-		String version;
-
-		if (config.getVersion() != null && !config.getVersion().trim().isEmpty())
-		{
-			version = config.getVersion();
-		}
-		else if (!isDev)
-		{
-			version = brjsVersion;
-		}
-		else
-		{
-			version = "";
-		}
-
-		return version;
 	}
 
 	private String getManifestCacheFiles() throws ContentProcessingException, ConfigException, MalformedTokenException, PropertiesException {
@@ -106,7 +79,7 @@ public class AppcacheManifestBuilder
         // If the version is empty, then the appcache should be disabled. We're only refreshing the manifest so that
         // the new index page without the manifest attribute will be picked up, and we don't really want it to re-cache
         // all the other files, so we leave them out of the manifest
-        if(!getManifestVersion().equals("")) {
+        if(!version.equals("")) {
             // See #getContentPaths for an explanation on why we need configured languages
             Locale[] languages = getConfiguredLocales();
             for (ContentPlugin plugin : brjs.plugins().contentPlugins())
@@ -123,12 +96,10 @@ public class AppcacheManifestBuilder
 
 	private String getManifestCacheFilesForPlugin(ContentPlugin plugin, Locale[] languages) throws ContentProcessingException, MalformedTokenException
 	{
-		// Do not specify the manifest itself in the cache manifest file, otherwise it
-		// will be nearly impossible to inform the browser a new manifest is available.
-		// Also don't specify plugins that are part of a composite in the manifest in prod;
+		// Don't specify plugins that are part of a composite in the manifest in prod;
 		// these files are already bundled inside the composite file and don't need to be
 		// also cached (in fact they are left out of the built prod app and cant be cached)
-		if (plugin.instanceOf(AppcacheContentPlugin.class) || (!isDev && plugin.getCompositeGroupName() != null))
+		if (!isDev && plugin.getCompositeGroupName() != null)
 		{
 			return "";
 		}
@@ -137,9 +108,16 @@ public class AppcacheManifestBuilder
 		App app = bundleSet.getBundlableNode().app();
 		for (String contentPath : getContentPaths(plugin, languages))
 		{
+            // Do not specify the manifest itself in the cache manifest file, otherwise it
+            // will be nearly impossible to inform the browser a new manifest is available.
+            if(plugin.instanceOf(AppcacheContentPlugin.class) && (contentPath.equals("/appcache/dev.appcache") || contentPath.equals("/appcache/prod.appcache"))) {
+                continue;
+            }
+            System.out.println("Raw: " + contentPath);
 			String path = (isDev) ? app.createDevBundleRequest(contentPath, brjsVersion) : app.createProdBundleRequest(contentPath, brjsVersion);
 			// Spaces need to be URL encoded or the manifest doesnt load the files correctly
 			path = path.replaceAll(" ", "%20");
+            System.out.println("App: " + path + "\n");
 			// Path begins with .. as paths are relative to the manifest file,
 			// and the manifest is in the "appcache/" directory
 			cacheFiles.append("../" + path + "\n");

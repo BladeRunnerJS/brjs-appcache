@@ -137,4 +137,13 @@ public class AppcacheContentPluginProdTests extends SpecTest
 		when(app).requestReceived("appcache/prod.appcache", pageResponse);
 		then(pageResponse).doesNotContainText("compositeProd");
 	}
+
+    @Test
+    public void testCacheManifestContainsVersionFile() throws Exception
+    {
+        given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
+        when(app).requestReceived("appcache/prod.appcache", pageResponse);
+        then(pageResponse).containsText("../v/dev/appcache/appcache.version");
+    }
 }

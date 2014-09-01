@@ -156,4 +156,24 @@ public class AppcacheContentPluginDevTests extends SpecTest
 		when(app).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).doesNotContainText("../v/dev/devMock");
 	}
+
+	@Test
+	public void testCacheManifestContainsVersionFile() throws Exception
+	{
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
+		when(app).requestReceived("appcache/dev.appcache", pageResponse);
+		then(pageResponse).containsText("../v/dev/appcache/appcache.version");
+	}
+
+	@Test
+	public void testCacheManifestContainsCorrectUnversionedFile() throws Exception
+	{
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("unbundled-resources/test.json", "{}")
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
+		when(app).requestReceived("appcache/dev.appcache", pageResponse);
+		then(pageResponse).containsText("../v/dev/appcache/appcache.version");
+	}
+
 }
