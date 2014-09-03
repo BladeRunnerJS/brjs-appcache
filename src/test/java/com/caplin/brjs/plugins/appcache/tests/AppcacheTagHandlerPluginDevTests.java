@@ -54,7 +54,7 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 	public void tagIsEmptyWithBlankVersionGiven() throws Exception
 	{
 		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
-			.and(aspect).containsFileWithContents("conf/appcache.conf", "version: ");
+			.and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: ");
 
 		when(aspect).indexPageLoadedInDev(pageResponse, "en");
 
@@ -65,7 +65,7 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 	public void tagHasContentWithVersionGiven() throws Exception
 	{
 		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
-			.and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
+			.and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: 1234");
 
 		when(aspect).indexPageLoadedInDev(pageResponse, "en");
 
@@ -76,10 +76,10 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 	public void tagHas404FileWhenVersionRemovedAfterPreviouslyHavingVersion() throws Exception
 	{
 		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
-			.and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
+			.and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: 1234");
 
 		when(aspect).indexPageLoadedInDev(new StringBuffer(), "en")
-			.and(aspect).containsFileWithContents("conf/appcache.conf", "version: ")
+			.and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: ")
 			.and(aspect).indexPageLoadedInDev(pageResponse, "en");
 		
 		then(pageResponse).containsText("manifest='appcache-404'");
@@ -89,11 +89,11 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 	public void tagIsBlankAfterHaving404() throws Exception
 	{
 		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
-			.and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
+			.and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: 1234");
 
 		StringBuffer firstTwoResponses = new StringBuffer();
 		when(aspect).indexPageLoadedInDev(firstTwoResponses, "en")
-			.and(aspect).containsFileWithContents("conf/appcache.conf", "version: ")
+			.and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: ")
 			.and(aspect).indexPageLoadedInDev(firstTwoResponses, "en")
 			.and(aspect).indexPageLoadedInDev(pageResponse, "en");
 		

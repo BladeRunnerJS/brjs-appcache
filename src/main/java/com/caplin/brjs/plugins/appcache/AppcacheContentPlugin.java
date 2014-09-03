@@ -1,6 +1,7 @@
 package com.caplin.brjs.plugins.appcache;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
@@ -31,8 +32,7 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		// @formatter:off
 		contentPathParserBuilder.accepts("/appcache/dev.appcache").as("dev-appcache-request")
-		                        .and("/appcache/prod.appcache").as("prod-appcache-request")
-                                .and("appcache/appcache.version").as("appcache-version");
+		                        .and("/appcache/prod.appcache").as("prod-appcache-request");
 		// @formatter:on
 
 		contentPathParser = contentPathParserBuilder.build();
@@ -69,17 +69,6 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin()
-	{
-		return new ArrayList<String>();
-	}
-
-	public List<String> getPluginsThatMustAppearAfterThisPlugin()
-	{
-		return new ArrayList<String>();
-	}
-
-	@Override
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
@@ -88,27 +77,20 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 	@Override
 	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor urlContent, String brjsVersion) throws ContentProcessingException
 	{
-		if (!contentPath.formName.equals("dev-appcache-request") && !contentPath.formName.equals("prod-appcache-request") && !contentPath.formName.equals("appcache-version"))
+		if (!contentPath.formName.equals("dev-appcache-request") && !contentPath.formName.equals("prod-appcache-request"))
 		{
 			throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
 		}
 
+        boolean isDev = contentPath.formName.equals("dev-appcache-request");
+        String version = getVersion(bundleSet, isDev, brjsVersion);
+        AppcacheManifestBuilder manifestBuilder = new AppcacheManifestBuilder(brjs, bundleSet, brjsVersion, version, isDev);
+
         String content = null;
-        String version = null;
-
-        if(contentPath.formName.equals("appcache-version")) {
-            boolean isDev = brjsVersion.equals("dev");
-            content = getVersion(bundleSet, isDev, brjsVersion);
-        } else {
-            boolean isDev = contentPath.formName.equals("dev-appcache-request");
-            version = getVersion(bundleSet, isDev, brjsVersion);
-            AppcacheManifestBuilder manifestBuilder = new AppcacheManifestBuilder(brjs, bundleSet, brjsVersion, version, isDev);
-
-            try {
-                content = manifestBuilder.getManifest();
-            } catch (ConfigException | PropertiesException | MalformedTokenException e) {
-                e.printStackTrace();
-            }
+        try {
+            content = manifestBuilder.getManifest();
+        } catch (ConfigException | PropertiesException | MalformedTokenException e) {
+            e.printStackTrace();
         }
 		return new CharResponseContent(bundleSet.getBundlableNode().root(), content);
 		
@@ -126,7 +108,6 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 		try
 		{
 			requestPaths.add(contentPathParser.createRequest(requestFormName));
-			requestPaths.add(contentPathParser.createRequest("appcache-version"));
 		}
 		catch (MalformedTokenException e)
 		{
@@ -138,7 +119,6 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
     /**
      * Generates a version number to use for the manifest. The version is generated from either:
      * 1) The config file if not empty
-     * 2) The BRJS version if not in dev
      * 3) Empty string fallback
      */
     private String getVersion(BundleSet bundleSet, boolean isDev, String brjsVersion)
@@ -152,13 +132,11 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
             e.printStackTrace();
         }
 
-        if (config != null && config.getVersion() != null && !config.getVersion().trim().isEmpty())
+        if (config != null && config.getVersion(isDev) != null)
         {
-            version = config.getVersion();
-        }
-        else if (!isDev)
-        {
-            version = brjsVersion;
+            version = config.getVersion(isDev);
+            version = version.replaceAll("\\$timestamp", "" + new Date().getTime());
+            version = version.replaceAll("\\$brjsVersion", brjsVersion);
         }
         else
         {

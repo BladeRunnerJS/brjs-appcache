@@ -29,46 +29,46 @@ public class AppcacheTagHandlerPluginProdTests extends SpecTest
 		pageResponse.delete(0, pageResponse.length());
 	}
 
-	@Test
-	public void tagIsPresentWithNoConfigFile() throws Exception
-	{
-		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'");
+    @Test
+    public void tagIsEmptyWithNoConfigFile() throws Exception
+    {
+        given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'");
 
-		when(aspect).indexPageLoadedInProd(pageResponse, "en");
+        when(aspect).indexPageLoadedInProd(pageResponse, "en");
 
-		then(pageResponse).containsText("manifest='../appcache/prod.appcache'");
-	}
+        then(pageResponse).containsText("manifest=''");
+    }
 
-	@Test
-	public void tagIsPresentWithEmptyConfigFile() throws Exception
-	{
-		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
-				.and(aspect).containsFileWithContents("conf/appcache.conf", "");
+    @Test
+    public void appcacheUrlTagIsEmptyWithEmptyConfigFile() throws Exception
+    {
+        given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "");
 
-		when(aspect).indexPageLoadedInProd(pageResponse, "en");
+        when(aspect).indexPageLoadedInProd(pageResponse, "en");
 
-		then(pageResponse).containsText("manifest='../appcache/prod.appcache'");
-	}
+        then(pageResponse).containsText("manifest=''");
+    }
 
-	@Test
-	public void tagIsPresentWithConfigFileWithNoVersionValue() throws Exception
-	{
-		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
-				.and(aspect).containsFileWithContents("conf/appcache.conf", "version: ");
+    @Test
+    public void tagIsEmptyWithBlankVersionGiven() throws Exception
+    {
+        given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: ");
 
-		when(aspect).indexPageLoadedInProd(pageResponse, "en");
+        when(aspect).indexPageLoadedInProd(pageResponse, "en");
 
-		then(pageResponse).containsText("manifest='../appcache/prod.appcache'");
-	}
+        then(pageResponse).containsText("manifest=''");
+    }
 
-	@Test
-	public void tagIsPresentWithConfigFileWithVersionSet() throws Exception
-	{
-		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
-				.and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
+    @Test
+    public void tagHasContentWithVersionGiven() throws Exception
+    {
+        given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
 
-		when(aspect).indexPageLoadedInProd(pageResponse, "en");
+        when(aspect).indexPageLoadedInProd(pageResponse, "en");
 
-		then(pageResponse).containsText("manifest='../appcache/prod.appcache'");
-	}
+        then(pageResponse).containsText("manifest='../appcache/prod.appcache'");
+    }
 }

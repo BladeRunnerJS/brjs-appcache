@@ -47,7 +47,7 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	public void testManifestUsesVersionFromConfig() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
-				.and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
+				.and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: 1234");
 
 		when(app).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).containsText("# v1234\n");
@@ -74,7 +74,7 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	public void testManifestUsesBlankVersionWhenBlankConfig() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
-			.and(aspect).containsFileWithContents("conf/appcache.conf", "version: ");
+			.and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: ");
 		when(app).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).containsText("# v\n");
 	}
@@ -91,7 +91,7 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	public void testCacheManifestContainsDevMockContent() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
-                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: 1234");
 		when(app).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).containsText("../v/dev/devMock");
 	}
@@ -100,7 +100,7 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	public void testCacheManifestContainsDevMockContentWithSpaceReplaced() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
-                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: 1234");
 		when(app).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).containsText("../v/dev/devSpace%20Mock");
 	}
@@ -109,7 +109,7 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	public void testCacheManifestDoesNotContainItself() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
-                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: 1234");
 		when(app).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).doesNotContainText("appcache/dev.appcache");
 	}
@@ -126,7 +126,7 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	public void testCacheManifestDoesContainCompositeFiles() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
-                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: 1234");
 		when(app).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).containsText("../v/dev/compositeDev");
 	}
@@ -152,28 +152,29 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	public void testCacheManifestDoesNotContainDevMockContentWhenBlankConfig() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
-                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: ");
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: ");
 		when(app).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).doesNotContainText("../v/dev/devMock");
 	}
 
 	@Test
-	public void testCacheManifestContainsVersionFile() throws Exception
+	public void testTimestampReplacedInVersion() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
-                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: 1.2.3-$timestamp");
 		when(app).requestReceived("appcache/dev.appcache", pageResponse);
-		then(pageResponse).containsText("../v/dev/appcache/appcache.version");
+        then(pageResponse).containsText("# v1.2.3-")
+                .and(pageResponse).doesNotContainText("$timestamp");
 	}
 
 	@Test
-	public void testCacheManifestContainsCorrectUnversionedFile() throws Exception
+	public void testBrjsVersionReplacedInVersion() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
-                .and(aspect).containsFileWithContents("unbundled-resources/test.json", "{}")
-                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: 1.2.3-$brjsVersion");
 		when(app).requestReceived("appcache/dev.appcache", pageResponse);
-		then(pageResponse).containsText("../v/dev/appcache/appcache.version");
+        then(pageResponse).containsText("# v1.2.3-dev\n")
+                .and(pageResponse).doesNotContainText("$brjsVersion");
 	}
 
 }

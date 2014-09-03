@@ -53,47 +53,36 @@ public class AppcacheContentPluginProdTests extends SpecTest
 	}
 
 	@Test
-	public void testManifestUsesBrjsVersionWhenNoConfig() throws Exception
+	public void testManifestUsesBlankVersionWhenNoConfig() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
 		when(app).requestReceived("appcache/prod.appcache", pageResponse);
-		// The version here is 'dev' because the BRJS spec test framework currently always passes in 'dev' 
-		// as the version to the ContentPlugin.writeContent method. We know that we're not actually in dev
-		// mode because then the manifest would have a blank version (see the equivalent test in 
-		// AppcacheContentPluginDevTests)
-		then(pageResponse).containsText("# vdev\n");
+		then(pageResponse).containsText("# v\n");
 	}
 	
 	@Test
-	public void testManifestUsesBrjsVersionWhenEmptyConfig() throws Exception
+	public void testManifestUsesBlankVersionWhenEmptyConfig() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
 			.and(aspect).containsFileWithContents("conf/appcache.conf", "");
 		when(app).requestReceived("appcache/prod.appcache", pageResponse);
-		// The version here is 'dev' because the BRJS spec test framework currently always passes in 'dev' 
-		// as the version to the ContentPlugin.writeContent method. We know that we're not actually in dev
-		// mode because then the manifest would have a blank version (see the equivalent test in 
-		// AppcacheContentPluginDevTests)
-		then(pageResponse).containsText("# vdev\n");
+		then(pageResponse).containsText("# v\n");
 	}
 	
 	@Test
-	public void testManifestUsesBrjsVersionWhenBlankConfig() throws Exception
+	public void testManifestUsesBlankVersionWhenBlankConfig() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
 		.and(aspect).containsFileWithContents("conf/appcache.conf", "version: ");
 		when(app).requestReceived("appcache/prod.appcache", pageResponse);
-		// The version here is 'dev' because the BRJS spec test framework currently always passes in 'dev' 
-		// as the version to the ContentPlugin.writeContent method. We know that we're not actually in dev
-		// mode because then the manifest would have a blank version (see the equivalent test in 
-		// AppcacheContentPluginDevTests)
-		then(pageResponse).containsText("# vdev\n");
+		then(pageResponse).containsText("# v\n");
 	}
 
 	@Test
 	public void testCacheManifestContainsCacheSection() throws Exception
 	{
-		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
 		when(app).requestReceived("appcache/prod.appcache", pageResponse);
 		then(pageResponse).containsText("CACHE:");
 	}
@@ -101,7 +90,8 @@ public class AppcacheContentPluginProdTests extends SpecTest
 	@Test
 	public void testCacheManifestContainsProdMockContent() throws Exception
 	{
-		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
 		when(app).requestReceived("appcache/prod.appcache", pageResponse);
 		then(pageResponse).containsText("../v/dev/prodMock");
 	}
@@ -109,7 +99,8 @@ public class AppcacheContentPluginProdTests extends SpecTest
 	@Test
 	public void testCacheManifestContainsProdMockContentWithSpaceReplaced() throws Exception
 	{
-		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
 		when(app).requestReceived("appcache/prod.appcache", pageResponse);
 		then(pageResponse).containsText("../v/dev/prodSpace%20Mock");
 	}
@@ -117,7 +108,8 @@ public class AppcacheContentPluginProdTests extends SpecTest
 	@Test
 	public void testCacheManifestDoesNotContainItself() throws Exception
 	{
-		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
 		when(app).requestReceived("appcache/prod.appcache", pageResponse);
 		then(pageResponse).doesNotContainText("appcache/prod.appcache");
 	}
@@ -125,7 +117,8 @@ public class AppcacheContentPluginProdTests extends SpecTest
 	@Test
 	public void testCacheManifestContainsNetworkSection() throws Exception
 	{
-		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
 		when(app).requestReceived("appcache/prod.appcache", pageResponse);
 		then(pageResponse).containsText("NETWORK:");
 	}
@@ -133,17 +126,30 @@ public class AppcacheContentPluginProdTests extends SpecTest
 	@Test
 	public void testCacheManifestDoesNotContainCompositeFiles() throws Exception
 	{
-		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
 		when(app).requestReceived("appcache/prod.appcache", pageResponse);
 		then(pageResponse).doesNotContainText("compositeProd");
 	}
 
     @Test
-    public void testCacheManifestContainsVersionFile() throws Exception
+    public void testTimestampReplacedInVersion() throws Exception
     {
         given(app).hasBeenCreated().and(aspect).hasBeenCreated()
-                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1.2.3-$timestamp");
         when(app).requestReceived("appcache/prod.appcache", pageResponse);
-        then(pageResponse).containsText("../v/dev/appcache/appcache.version");
+        then(pageResponse).containsText("# v1.2.3-")
+                .and(pageResponse).doesNotContainText("$timestamp");
     }
+
+    @Test
+    public void testBrjsVersionReplacedInVersion() throws Exception
+    {
+        given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1.2.3-$brjsVersion");
+        when(app).requestReceived("appcache/prod.appcache", pageResponse);
+        then(pageResponse).containsText("# v1.2.3-dev\n")
+                .and(pageResponse).doesNotContainText("$brjsVersion");
+    }
+
 }

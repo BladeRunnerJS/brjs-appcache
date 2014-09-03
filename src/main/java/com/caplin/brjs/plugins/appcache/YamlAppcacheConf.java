@@ -9,7 +9,8 @@ public class YamlAppcacheConf extends AbstractYamlConfFile
 {
 
 	public String version;
-	
+	public String devVersion;
+
 	@Override
 	public void verify() throws ConfigException
 	{
