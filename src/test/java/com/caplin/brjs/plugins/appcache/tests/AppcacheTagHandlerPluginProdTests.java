@@ -51,14 +51,14 @@ public class AppcacheTagHandlerPluginProdTests extends SpecTest
     }
 
     @Test
-    public void tagIsEmptyWithBlankVersionGiven() throws Exception
+    public void tagHasContentWithBlankVersionGiven() throws Exception
     {
         given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
                 .and(aspect).containsFileWithContents("conf/appcache.conf", "version: ");
 
         when(aspect).indexPageLoadedInProd(pageResponse, "en");
 
-        then(pageResponse).containsText("manifest=''");
+        then(pageResponse).containsText("manifest='../appcache/prod.appcache'");
     }
 
     @Test

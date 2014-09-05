@@ -2,6 +2,7 @@ package com.caplin.brjs.plugins.appcache.tests;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
@@ -35,10 +36,12 @@ public class AppcacheContentPluginProdTests extends SpecTest
 	}
 
 	@Test
-	public void testCacheManifestIsGenerated() throws Exception
+	public void testCacheManifestIsGeneratedWithValidConfig() throws Exception
 	{
-		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(app).requestReceived("appcache/prod.appcache", pageResponse);
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
+
+        when(app).requestReceived("appcache/prod.appcache", pageResponse);
 		then(pageResponse).containsText("CACHE MANIFEST");
 	}
 
@@ -52,22 +55,24 @@ public class AppcacheContentPluginProdTests extends SpecTest
 		then(pageResponse).containsText("# v1234\n");
 	}
 
-	@Test
-	public void testManifestUsesBlankVersionWhenNoConfig() throws Exception
-	{
-		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(app).requestReceived("appcache/prod.appcache", pageResponse);
-		then(pageResponse).containsText("# v\n");
-	}
-	
-	@Test
-	public void testManifestUsesBlankVersionWhenEmptyConfig() throws Exception
-	{
-		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
-			.and(aspect).containsFileWithContents("conf/appcache.conf", "");
-		when(app).requestReceived("appcache/prod.appcache", pageResponse);
-		then(pageResponse).containsText("# v\n");
-	}
+    @Test
+    public void testManifestIsDisabledWhenNoConfig() throws Exception
+    {
+        given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+        when(app).requestReceived("appcache/prod.appcache", pageResponse);
+        then(pageResponse).containsText("# AppCache is currently disabled. Enable it by specifying a version in your appcache.conf file")
+                .and(pageResponse).doesNotContainText("../v/prod/prodMock");
+    }
+
+    @Test
+    public void testManifestIsDisabledWhenEmptyConfig() throws Exception
+    {
+        given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "");
+        when(app).requestReceived("appcache/prod.appcache", pageResponse);
+        then(pageResponse).containsText("# AppCache is currently disabled. Enable it by specifying a version in your appcache.conf file")
+                .and(pageResponse).doesNotContainText("../v/prod/prodMock");
+    }
 	
 	@Test
 	public void testManifestUsesBlankVersionWhenBlankConfig() throws Exception

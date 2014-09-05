@@ -2,6 +2,7 @@ package com.caplin.brjs.plugins.appcache.tests;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
@@ -36,11 +37,12 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	}
 
 	@Test
-	public void testCacheManifestIsGenerated() throws Exception
+	public void testCacheManifestIsGeneratedWithValidConfig() throws Exception
 	{
-		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+        given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+				.and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: 1234");
 		when(app).requestReceived("appcache/dev.appcache", pageResponse);
-		then(pageResponse).containsText("CACHE MANIFEST");
+        then(pageResponse).containsText("CACHE MANIFEST");
 	}
 
 	@Test
@@ -54,20 +56,22 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	}
 
 	@Test
-	public void testManifestUsesBlankVersionWhenNoConfig() throws Exception
+	public void testManifestIsDisabledWhenNoConfig() throws Exception
 	{
-		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(app).requestReceived("appcache/dev.appcache", pageResponse);
-		then(pageResponse).containsText("# v\n");
+        given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+        when(app).requestReceived("appcache/dev.appcache", pageResponse);
+        then(pageResponse).containsText("# AppCache is currently disabled. Enable it by specifying a version in your appcache.conf file")
+                .and(pageResponse).doesNotContainText("../v/dev/devMock");
 	}
-	
+
 	@Test
-	public void testManifestUsesBlankVersionWhenEmptyConfig() throws Exception
+	public void testManifestIsDisabledWhenEmptyConfig() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
 			.and(aspect).containsFileWithContents("conf/appcache.conf", "");
 		when(app).requestReceived("appcache/dev.appcache", pageResponse);
-		then(pageResponse).containsText("# v\n");
+        then(pageResponse).containsText("# AppCache is currently disabled. Enable it by specifying a version in your appcache.conf file")
+                .and(pageResponse).doesNotContainText("../v/dev/devMock");
 	}
 	
 	@Test
@@ -82,8 +86,9 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	@Test
 	public void testCacheManifestContainsCacheSection() throws Exception
 	{
-		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(app).requestReceived("appcache/dev.appcache", pageResponse);
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: 1234");
+        when(app).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).containsText("CACHE:");
 	}
 
@@ -117,8 +122,9 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	@Test
 	public void testCacheManifestContainsNetworkSection() throws Exception
 	{
-		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(app).requestReceived("appcache/dev.appcache", pageResponse);
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: 1234");
+        when(app).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).containsText("NETWORK:");
 	}
 	
@@ -132,29 +138,12 @@ public class AppcacheContentPluginDevTests extends SpecTest
 	}
 
 	@Test
-	public void testCacheManifestDoesNotContainDevMockContentWhenNoConfig() throws Exception
-	{
-		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
-		when(app).requestReceived("appcache/dev.appcache", pageResponse);
-		then(pageResponse).doesNotContainText("../v/dev/devMock");
-	}
-
-	@Test
-	public void testCacheManifestDoesNotContainDevMockContentWhenEmptyConfig() throws Exception
-	{
-		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
-                .and(aspect).containsFileWithContents("conf/appcache.conf", "");
-		when(app).requestReceived("appcache/dev.appcache", pageResponse);
-		then(pageResponse).doesNotContainText("../v/dev/devMock");
-	}
-
-	@Test
-	public void testCacheManifestDoesNotContainDevMockContentWhenBlankConfig() throws Exception
+	public void testCacheManifestDoesContainDevMockContentWhenBlankConfig() throws Exception
 	{
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
                 .and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: ");
 		when(app).requestReceived("appcache/dev.appcache", pageResponse);
-		then(pageResponse).doesNotContainText("../v/dev/devMock");
+		then(pageResponse).containsText("../v/dev/devMock");
 	}
 
 	@Test

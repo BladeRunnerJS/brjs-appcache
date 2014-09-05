@@ -13,7 +13,7 @@ public class AppcacheConf extends ConfFile<YamlAppcacheConf>
 
 	public String getVersion()
 	{
-		return parseVersion(conf.version);
+		return conf.version;
 	}
 
     public String getVersion(boolean isDev)
@@ -30,17 +30,7 @@ public class AppcacheConf extends ConfFile<YamlAppcacheConf>
 
     public String getDevVersion()
     {
-        return parseVersion(conf.devVersion);
-    }
-
-    private String parseVersion(String version)
-    {
-        if(version != null && version.trim().isEmpty())
-        {
-            version = null;
-        }
-
-        return version;
+        return conf.devVersion;
     }
 
 }

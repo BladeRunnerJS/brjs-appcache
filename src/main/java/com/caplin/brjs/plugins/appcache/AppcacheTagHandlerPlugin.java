@@ -8,7 +8,9 @@ import java.util.Map;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.PropertiesException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
@@ -21,9 +23,6 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 {
 
 	private ContentPathParser contentPathParser;
-	private boolean devAppcachePreviouslyEnabled = false;
-
-    public static String currentVersion = null;
 
 	@Override
 	public String getTagName()
@@ -36,25 +35,26 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 	{
 		try
 		{
-            this.currentVersion = getConfiguredVersion(bundleSet.getBundlableNode(), true, version);
-            System.out.println("Dev: " + this.currentVersion);
-			// We enable appcache in dev by populating the tag if there's a config file with a
-			// version specified
-			if (this.currentVersion != null)
+            NodeProperties appcacheProperties = bundleSet.getBundlableNode().nodeProperties("appcache");
+			if (isAppcacheEnabled(bundleSet.getBundlableNode(), true))
 			{
 				writer.write(".." + contentPathParser.createRequest("dev-appcache-request"));
-				devAppcachePreviouslyEnabled = true;
+                appcacheProperties.setPersisentProperty("devAppcachePreviouslyEnabled", "true");
 			}
-			else if (devAppcachePreviouslyEnabled)
+			else
 			{
-				// http://stackoverflow.com/a/7941620
-				// Appcache is only disabled if the manifest does not exist,
-				// so we set the tag to something that will return a 404
-				writer.write("appcache-404");
-				devAppcachePreviouslyEnabled = false;
+                String devAppcachePreviouslyEnabled = appcacheProperties.getPersisentProperty("devAppcachePreviouslyEnabled");
+                if(devAppcachePreviouslyEnabled != null && devAppcachePreviouslyEnabled.equals("true"))
+                {
+                    // http://stackoverflow.com/a/7941620
+                    // Appcache is only disabled if the manifest does not exist,
+                    // so we set the tag to something that will return a 404
+                    writer.write("appcache-disabled");
+                    appcacheProperties.setPersisentProperty("devAppcachePreviouslyEnabled", "false");
+                }
 			}
 		}
-		catch (MalformedTokenException | ConfigException e)
+		catch (MalformedTokenException | PropertiesException e)
 		{
 			throw new IOException(e);
 		}
@@ -65,13 +65,12 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 	{
 		try
 		{
-            String appcacheVersion = getConfiguredVersion(bundleSet.getBundlableNode(), false, version);
-            if(appcacheVersion != null)
+            if(isAppcacheEnabled(bundleSet.getBundlableNode(), false))
             {
 			    writer.write(".." + contentPathParser.createRequest("prod-appcache-request"));
             }
 		}
-		catch (MalformedTokenException | ConfigException e)
+		catch (MalformedTokenException e)
 		{
 			throw new IOException(e);
 		}
@@ -83,38 +82,20 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 		this.contentPathParser = brjs.plugins().contentPlugin("appcache").getContentPathParser();
 	}
 
-	/**
-	 * Gets the appcache manifest version as configured in the appcache.conf file. If no version is
-	 * configured this method will return null.
-	 * 
-	 * @param node
-	 *            The BRJSNode that the config should be retrieved for
-	 * @return Configured manifest version
-	 * @throws ConfigException
-	 *             If the version could not be read from the config file
-	 */
-	private String getConfiguredVersion(BundlableNode node, boolean isDev, String brjsVersion) throws ConfigException
+	private boolean isAppcacheEnabled(BundlableNode node, boolean isDev)
 	{
-        AppcacheConf config = null;
+        String version = null;
         try {
-            config = new AppcacheConf(node);
+            AppcacheConf config = new AppcacheConf(node);
+            if (config != null)
+            {
+                version = config.getVersion(isDev);
+            }
         } catch (ConfigException e) {
             e.printStackTrace();
         }
 
-        String version;
-        if (config != null && config.getVersion(isDev) != null)
-        {
-            version = config.getVersion(isDev);
-            version = version.replaceAll("\\$timestamp", "" + new Date().getTime());
-            version = version.replaceAll("\\$brjsVersion", brjsVersion);
-        }
-        else
-        {
-            version = "";
-        }
-
-        return version;
-	}
+        return version != null;
+    }
 
 }

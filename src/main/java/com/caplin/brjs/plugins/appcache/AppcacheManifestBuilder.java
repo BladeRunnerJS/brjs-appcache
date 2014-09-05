@@ -56,8 +56,14 @@ public class AppcacheManifestBuilder
 	public String getManifest() throws PropertiesException, ContentProcessingException, ConfigException, MalformedTokenException
 	{
 		String manifest = getManifestHeader();
-		manifest += getManifestCacheFiles();
-		manifest += getManifestNetworkFiles();
+        if(version != null)
+        {
+            // If the version is null, then the appcache should be disabled. We're only refreshing the manifest so that
+            // the new index page without the manifest attribute will be picked up, and we don't really want it to re-cache
+            // all the other files, so we leave them out of the manifest
+            manifest += getManifestCacheFiles();
+            manifest += getManifestNetworkFiles();
+        }
 		return manifest;
 	}
 
@@ -69,27 +75,28 @@ public class AppcacheManifestBuilder
 
 	private String getManifestHeader() throws PropertiesException
 	{
-		return "CACHE MANIFEST\n# v" + version + "\n\n";
+        String header = "CACHE MANIFEST\n";
+        if(version != null)
+        {
+            header += "# v" + version + "\n\n";
+        } else {
+            header += "# AppCache is currently disabled. Enable it by specifying a version in your appcache.conf file";
+        }
+		return header;
 	}
 
 	private String getManifestCacheFiles() throws ContentProcessingException, ConfigException, MalformedTokenException, PropertiesException {
 		StringBuilder cacheFiles = new StringBuilder();
-		cacheFiles.append("CACHE:\n");
+        cacheFiles.append("CACHE:\n");
 
-        // If the version is empty, then the appcache should be disabled. We're only refreshing the manifest so that
-        // the new index page without the manifest attribute will be picked up, and we don't really want it to re-cache
-        // all the other files, so we leave them out of the manifest
-        if(!version.equals("")) {
-            // See #getContentPaths for an explanation on why we need configured languages
-            Locale[] languages = getConfiguredLocales();
-            for (ContentPlugin plugin : brjs.plugins().contentPlugins())
-            {
-                String pluginCacheFiles = getManifestCacheFilesForPlugin(plugin, languages);
-                cacheFiles.append(pluginCacheFiles);
-            }
+        // See #getContentPaths for an explanation on why we need configured languages
+        Locale[] languages = getConfiguredLocales();
+        for (ContentPlugin plugin : brjs.plugins().contentPlugins())
+        {
+            String pluginCacheFiles = getManifestCacheFilesForPlugin(plugin, languages);
+            cacheFiles.append(pluginCacheFiles);
         }
-
-		cacheFiles.append("\n");
+        cacheFiles.append("\n");
 
 		return cacheFiles.toString();
 	}
@@ -113,11 +120,9 @@ public class AppcacheManifestBuilder
             if(plugin.instanceOf(AppcacheContentPlugin.class) && (contentPath.equals("/appcache/dev.appcache") || contentPath.equals("/appcache/prod.appcache"))) {
                 continue;
             }
-            System.out.println("Raw: " + contentPath);
 			String path = (isDev) ? app.createDevBundleRequest(contentPath, brjsVersion) : app.createProdBundleRequest(contentPath, brjsVersion);
 			// Spaces need to be URL encoded or the manifest doesnt load the files correctly
 			path = path.replaceAll(" ", "%20");
-            System.out.println("App: " + path + "\n");
 			// Path begins with .. as paths are relative to the manifest file,
 			// and the manifest is in the "appcache/" directory
 			cacheFiles.append("../" + path + "\n");

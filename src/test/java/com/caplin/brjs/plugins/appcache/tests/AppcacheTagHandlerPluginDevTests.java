@@ -51,14 +51,14 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 	}
 
 	@Test
-	public void tagIsEmptyWithBlankVersionGiven() throws Exception
+	public void tagHasContentWithBlankVersionGiven() throws Exception
 	{
 		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
 			.and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: ");
 
 		when(aspect).indexPageLoadedInDev(pageResponse, "en");
 
-		then(pageResponse).containsText("manifest=''");
+		then(pageResponse).containsText("manifest='../appcache/dev.appcache'");
 	}
 
 	@Test
@@ -79,10 +79,10 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 			.and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: 1234");
 
 		when(aspect).indexPageLoadedInDev(new StringBuffer(), "en")
-			.and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: ")
+			.and(aspect).containsFileWithContents("conf/appcache.conf", "")
 			.and(aspect).indexPageLoadedInDev(pageResponse, "en");
 		
-		then(pageResponse).containsText("manifest='appcache-404'");
+		then(pageResponse).containsText("manifest='appcache-disabled'");
 	}
 	
 	@Test
@@ -93,7 +93,7 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 
 		StringBuffer firstTwoResponses = new StringBuffer();
 		when(aspect).indexPageLoadedInDev(firstTwoResponses, "en")
-			.and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: ")
+			.and(aspect).containsFileWithContents("conf/appcache.conf", "")
 			.and(aspect).indexPageLoadedInDev(firstTwoResponses, "en")
 			.and(aspect).indexPageLoadedInDev(pageResponse, "en");
 		

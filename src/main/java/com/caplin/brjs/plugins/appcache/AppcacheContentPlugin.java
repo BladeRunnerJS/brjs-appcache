@@ -1,5 +1,7 @@
 package com.caplin.brjs.plugins.appcache;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -93,7 +95,7 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
             e.printStackTrace();
         }
 		return new CharResponseContent(bundleSet.getBundlableNode().root(), content);
-		
+
 	}
 
 	/**************************************
@@ -123,8 +125,6 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
      */
     private String getVersion(BundleSet bundleSet, boolean isDev, String brjsVersion)
     {
-        String version;
-
         AppcacheConf config = null;
         try {
             config = new AppcacheConf(bundleSet.getBundlableNode());
@@ -132,16 +132,20 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
             e.printStackTrace();
         }
 
-        if (config != null && config.getVersion(isDev) != null)
+        String version = null;
+        if (config != null)
         {
             version = config.getVersion(isDev);
-            version = version.replaceAll("\\$timestamp", "" + new Date().getTime());
-            version = version.replaceAll("\\$brjsVersion", brjsVersion);
+
+            if(version != null)
+            {
+                version = config.getVersion(isDev);
+                version = version.replaceAll("\\$timestamp", "" + new Date().getTime());
+                version = version.replaceAll("\\$brjsVersion", brjsVersion);
+            }
         }
-        else
-        {
-            version = "";
-        }
+
+        bundleSet.getBundlableNode().nodeProperties("appcache").setTransientProperty("version", version);
 
         return version;
     }
