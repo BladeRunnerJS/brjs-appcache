@@ -8,7 +8,7 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
 - Copy the plugin JAR to the BRJS `apps/<your-app>/WEB-INF/lib` folder.
 - Add the appcache plugin tag to your HTML element e.g. `<html manifest="<@appcache.url@/>">`
 
-> Remember it's *disabled in dev by default*, so you'll either need to [enable it in dev](#enableInDev) or build a prod version of your app to see the appcache in action.
+> Remember it's *disabled by default*, so you'll need to [enable it](#enabling) to see the appcache in action.
 
 ## Usage
 
@@ -18,28 +18,24 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
 
 > This is a requirement of BRJS <= v0.9, in the future the plugin deployment process may change.
 
+<a name="enabling"></a>
 ### Enabling
-- To link it in to your application the plugin provides the `appcache.url` tag handler. This tag will replaced with the URL to the manifest file, so you should set the `manifest` attribute on the `html` element to use the tag as its value. 
+- To link it in to your application the plugin provides the `appcache.url` tag handler. This tag will replaced with the URL to the manifest file, so you should set the `manifest` attribute on the `html` element to use the tag as its value.
     - In other words your html element should look something like `<html manifest="<@appcache.url@/>">`
+- The manifest URL is blank by default so the appcache will not be used. You can enable the appcache by specifying an appcache version in the config file.
+    - See the [Configuration](#configuration) section for details on how to do this.
 
 > The HTML `<base href="..." />` tag is incompatible with the appcache plugin. BRJS <= v0.8 applications by default are created with the base tag in `index.html`, so *this will need to be removed before the appcache plugin will work*. This is OK - the use of the base tag was added by bladerunner to replicate some of the appcache functionality, but now you're using the real thing you don't need it any more!
-
-<a name="enableInDev"></a>
-#### Dev
-In dev, the manifest URL is blank by default so the appcache will not be used.
-
-- You can test the appcache in dev by manually specifying an appcache version in the config file. See the [Configuration](#configuration) section for details on how to do this.
-
-#### Prod
-In prod, the manifest URL is always generated and points to a valid manifest.
-- The manifest will be given a new version every time you generate the prod files.
-- The manifest can be given a specific version by specifying an appcache version in the config file. See the [Configuration](#configuration) section for details on how to do this.
 
 <a name="configuration"></a>
 ### Configuration
 - Appcache is configured at an aspect level, as different aspects will use different appcaches.
 - A config file named `appcache.conf` is looked for in the `<aspect>/conf` folder. It supports the following properties in [YAML format](http://en.wikipedia.org/wiki/YAML#Examples) (i.e. `property: value`):
-    - `version` a specific version to use for the appcache manifest in dev or prod.
+    - `version` a specific version to use for the appcache manifest in prod.
+    - `devVersion` a specific version to use for the appcache manifest in dev.
+- The appcache version options support some special variables to make managing the versions easier:
+   - `$timestamp` will be replaced with the current timestamp when the manifest is generated.
+   - `$brjsVersion` will be replaced with the current BRJS version being used (e.g. what appears in the file paths as /v/<version>/)
 - Only files for the listed locales are cached. The locales configuration is standard BRJS functionality, and can be found in the `<your-app>/app.conf` file.
 
 ## Development
