@@ -155,4 +155,13 @@ public class AppcacheContentPluginProdTests extends SpecTest
                 .and(pageResponse).doesNotContainText("$brjsVersion");
     }
 
+    @Test
+    public void testVersionIsStoredCorrectly() throws Exception
+    {
+        given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1.2.3-$brjsVersion");
+        when(app).requestReceived("appcache/prod.appcache", pageResponse);
+        then(aspect).containsTransientNodeProperty("appcache", "version", "1.2.3-dev");
+    }
+
 }
