@@ -117,9 +117,7 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 	}
 
     /**
-     * Generates a version number to use for the manifest. The version is generated from either:
-     * 1) The config file if not empty
-     * 3) Empty string fallback
+     * Gets the version number from the config file, with special tokens such as $timestamp and $brjsVersion replaced.
      */
     private String getVersion(BundleSet bundleSet, boolean isDev, String brjsVersion)
     {

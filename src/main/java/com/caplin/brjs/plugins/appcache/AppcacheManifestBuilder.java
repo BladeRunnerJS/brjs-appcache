@@ -1,7 +1,5 @@
 package com.caplin.brjs.plugins.appcache;
 
-import java.util.List;
-
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
@@ -11,6 +9,9 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.Locale;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Builds manifest file strings based on a given set of parameters.
