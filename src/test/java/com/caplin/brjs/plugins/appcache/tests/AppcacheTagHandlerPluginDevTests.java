@@ -30,24 +30,24 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 	}
 
 	@Test
-	public void tagIsEmptyWithNoConfigFile() throws Exception
+	public void tagIsDisabledWithNoConfigFile() throws Exception
 	{
 		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'");
 
 		when(aspect).indexPageLoadedInDev(pageResponse, "en");
 
-		then(pageResponse).containsText("manifest=''");
+		then(pageResponse).containsText("manifest='appcache-disabled'");
 	}
 
 	@Test
-	public void appcacheUrlTagIsEmptyWithEmptyConfigFile() throws Exception
+	public void appcacheUrlTagIsDisabledWithEmptyConfigFile() throws Exception
 	{
 		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
 			.and(aspect).containsFileWithContents("conf/appcache.conf", "");
 
 		when(aspect).indexPageLoadedInDev(pageResponse, "en");
 
-		then(pageResponse).containsText("manifest=''");
+		then(pageResponse).containsText("manifest='appcache-disabled'");
 	}
 
 	@Test
@@ -86,7 +86,7 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 	}
 	
 	@Test
-	public void tagIsBlankAfterHaving404() throws Exception
+	public void tagRemainsDisabledAfterHaving404() throws Exception
 	{
 		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
 			.and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: 1234");
@@ -97,6 +97,6 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 			.and(aspect).indexPageLoadedInDev(firstTwoResponses, "en")
 			.and(aspect).indexPageLoadedInDev(pageResponse, "en");
 		
-		then(pageResponse).containsText("manifest=''");
+		then(pageResponse).containsText("manifest='appcache-disabled'");
 	}
 }
