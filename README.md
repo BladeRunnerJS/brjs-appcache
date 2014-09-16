@@ -35,7 +35,7 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
     - `devVersion` a specific version to use for the appcache manifest in dev.
 - The appcache version options support some special variables to make managing the versions easier:
    - `$timestamp` will be replaced with the current timestamp when the manifest is generated.
-   - `$brjsVersion` will be replaced with the current BRJS version being used (e.g. what appears in the file paths as /v/<version>/)
+   - `$brjsVersion` will be replaced with the current BRJS version being used (e.g. what appears in the file paths as /v/version/)
 - Only files for the listed locales are cached. The locales configuration is standard BRJS functionality, and can be found in the `<your-app>/app.conf` file.
 
 ## Development
