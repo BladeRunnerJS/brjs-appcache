@@ -34,26 +34,19 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 	{
 		try
 		{
-            NodeProperties appcacheProperties = bundleSet.getBundlableNode().nodeProperties("appcache");
 			if (isAppcacheEnabled(bundleSet.getBundlableNode(), true))
 			{
 				writer.write(".." + contentPathParser.createRequest("dev-appcache-request"));
-                appcacheProperties.setPersisentProperty("devAppcachePreviouslyEnabled", "true");
 			}
 			else
 			{
-                String devAppcachePreviouslyEnabled = appcacheProperties.getPersisentProperty("devAppcachePreviouslyEnabled");
-                if(devAppcachePreviouslyEnabled != null && devAppcachePreviouslyEnabled.equals("true"))
-                {
-                    // http://stackoverflow.com/a/7941620
-                    // Appcache is only disabled if the manifest does not exist,
-                    // so we set the tag to something that will return a 404
-                    writer.write("appcache-disabled");
-                    appcacheProperties.setPersisentProperty("devAppcachePreviouslyEnabled", "false");
-                }
+                // http://stackoverflow.com/a/7941620
+                // Appcache is only disabled if the manifest does not exist,
+                // so we set the tag to something that will return a 404
+                writer.write("appcache-disabled");
 			}
 		}
-		catch (MalformedTokenException | PropertiesException e)
+		catch (MalformedTokenException e)
 		{
 			throw new IOException(e);
 		}
