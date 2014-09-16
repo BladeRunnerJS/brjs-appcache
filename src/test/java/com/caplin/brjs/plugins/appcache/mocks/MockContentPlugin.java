@@ -1,9 +1,5 @@
 package com.caplin.brjs.plugins.appcache.mocks;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
@@ -14,6 +10,9 @@ import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class MockContentPlugin extends AbstractContentPlugin
 {

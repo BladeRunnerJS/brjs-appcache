@@ -1,15 +1,13 @@
 package com.caplin.brjs.plugins.appcache.tests;
 
+import com.caplin.brjs.plugins.appcache.mocks.MockCompositeContentPlugin;
+import com.caplin.brjs.plugins.appcache.mocks.MockContentPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.caplin.brjs.plugins.appcache.mocks.MockCompositeContentPlugin;
-import com.caplin.brjs.plugins.appcache.mocks.MockContentPlugin;
 
 public class AppcacheContentPluginDevTests extends SpecTest
 {

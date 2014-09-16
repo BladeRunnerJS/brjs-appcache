@@ -10,7 +10,6 @@ import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.Locale;
 
-import java.util.Date;
 import java.util.List;
 
 /**
