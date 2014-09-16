@@ -10,7 +10,7 @@ import org.bladerunnerjs.plugin.CharResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.appmeta.AppMetadataContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
@@ -46,7 +46,7 @@ public class AppcacheVersionContentPlugin extends AbstractContentPlugin {
 
     @Override
     public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-        return Arrays.asList(CommonJsContentPlugin.class.getCanonicalName());
+        return Arrays.asList(AppMetadataContentPlugin.class.getCanonicalName());
     }
 
     @Override
@@ -57,7 +57,7 @@ public class AppcacheVersionContentPlugin extends AbstractContentPlugin {
         }
 
         String version = (String) bundleSet.getBundlableNode().nodeProperties("appcache").getTransientProperty("version");
-        String content = "$BRJS_APPCACHE_VERSION = ";
+        String content = "window.$BRJS_APPCACHE_VERSION = ";
 
         if(version != null) {
             content += "\"" + version + "\";";

@@ -1,10 +1,5 @@
 package com.caplin.brjs.plugins.appcache;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Date;
-import java.util.Map;
-
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
@@ -15,6 +10,10 @@ import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Map;
 
 /**
  * Generates an appcache manifest URL when the "appcache.url" tag is used.
