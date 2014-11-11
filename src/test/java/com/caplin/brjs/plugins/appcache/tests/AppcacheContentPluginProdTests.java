@@ -1,8 +1,10 @@
 package com.caplin.brjs.plugins.appcache.tests;
 
 import com.caplin.brjs.plugins.appcache.mocks.MockContentPlugin;
+
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.plugin.plugins.bundlers.compositejs.CompositeJsContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
@@ -133,6 +135,32 @@ public class AppcacheContentPluginProdTests extends SpecTest
                 .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
 		when(app).requestReceived("appcache/prod.appcache", pageResponse);
 		then(pageResponse).doesNotContainText("compositeProd");
+	}
+	
+	@Test
+	public void testCacheManifestDoesNotListUnusedJSBundles() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(aspect).indexPageHasContent("<@js.bundle prod-minifier='closure-whitespace' @/>\nrequire('appns/Class1');")
+			.and(aspect).hasClass("Class1")
+			.and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
+		when(app).requestReceived("appcache/prod.appcache", pageResponse);
+		then(pageResponse).containsText("js/prod/closure-whitespace/bundle.js")
+			.and(pageResponse).doesNotContainText("js/prod/combined/bundle.js")
+			.and(pageResponse).doesNotContainText("js/prod/closure-simple/bundle.js")
+			.and(pageResponse).doesNotContainText("js/prod/closure-advanced/bundle.js");
+	}
+	
+	@Test
+	public void testCacheManifestDoesNotListUnusedCssResourceBundles() throws Exception
+	{
+		given(app).hasBeenCreated()
+    		.and(aspect).hasBeenCreated()
+    		.and(aspect).containsFiles("themes/common/style.css", "theme/common/some-file.txt")
+    		.and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234");
+			when(app).requestReceived("appcache/prod.appcache", pageResponse);
+		then(pageResponse).doesNotContainText("some-file.txt");
 	}
 
     @Test

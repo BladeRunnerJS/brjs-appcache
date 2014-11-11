@@ -111,7 +111,7 @@ public class AppcacheManifestBuilder
 
 		StringBuilder cacheFiles = new StringBuilder();
 		App app = bundleSet.getBundlableNode().app();
-		for (String contentPath : plugin.getValidContentPaths(bundleSet, requestMode, languages))
+		for (String contentPath : plugin.getUsedContentPaths(bundleSet, requestMode, languages))
 		{
             // Do not specify the manifest itself in the cache manifest file, otherwise it
             // will be nearly impossible to inform the browser a new manifest is available.
