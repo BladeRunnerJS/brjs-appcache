@@ -3,6 +3,7 @@ package com.caplin.brjs.plugins.appcache;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.PropertiesException;
@@ -57,15 +58,19 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
+	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
 	{
-		return getValidContentPaths("dev-appcache-request");
-	}
-
-	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
-	{
-		return getValidContentPaths("prod-appcache-request");
+		List<String> requestPaths = new ArrayList<>();
+		try
+		{
+			String requestFormName = (requestMode == RequestMode.Dev) ? "dev-appcache-request" : "prod-appcache-request";
+			requestPaths.add(contentPathParser.createRequest(requestFormName));
+		}
+		catch (MalformedTokenException e)
+		{
+			throw new ContentProcessingException(e);
+		}
+		return requestPaths;
 	}
 
 	@Override
@@ -82,13 +87,13 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 			throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
 		}
 
-        boolean isDev = contentPath.formName.equals("dev-appcache-request");
-        String version = getVersion(bundleSet, isDev, brjsVersion);
-        AppcacheManifestBuilder manifestBuilder = new AppcacheManifestBuilder(brjs, bundleSet, brjsVersion, version, isDev);
-
+		RequestMode requestMode = (contentPath.formName.equals("dev-appcache-request")) ? RequestMode.Dev : RequestMode.Prod;
         String content = null;
         try {
-            content = manifestBuilder.getManifest();
+        	String version = getVersion(bundleSet, requestMode, brjsVersion);
+        	AppcacheManifestBuilder manifestBuilder = new AppcacheManifestBuilder(brjs, bundleSet, brjsVersion, version, requestMode);
+
+            content = manifestBuilder.getManifest(requestMode);
         } catch (ConfigException | PropertiesException | MalformedTokenException e) {
             e.printStackTrace();
         }
@@ -102,24 +107,11 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 	 * 
 	 **************************************/
 
-	private List<String> getValidContentPaths(String requestFormName) throws ContentProcessingException
-	{
-		List<String> requestPaths = new ArrayList<>();
-		try
-		{
-			requestPaths.add(contentPathParser.createRequest(requestFormName));
-		}
-		catch (MalformedTokenException e)
-		{
-			throw new ContentProcessingException(e);
-		}
-		return requestPaths;
-	}
-
     /**
      * Gets the version number from the config file, with special tokens such as $timestamp and $brjsVersion replaced.
+     * @throws ConfigException 
      */
-    private String getVersion(BundleSet bundleSet, boolean isDev, String brjsVersion)
+    private String getVersion(BundleSet bundleSet, RequestMode requestMode, String brjsVersion) throws ConfigException
     {
         AppcacheConf config = null;
         try {
@@ -131,11 +123,11 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
         String version = null;
         if (config != null)
         {
-            version = config.getVersion(isDev);
+            version = config.getVersion(requestMode);
 
             if(version != null)
             {
-                version = config.getVersion(isDev);
+                version = config.getVersion(requestMode);
                 version = version.replaceAll("\\$timestamp", "" + new Date().getTime());
                 version = version.replaceAll("\\$brjsVersion", brjsVersion);
             }

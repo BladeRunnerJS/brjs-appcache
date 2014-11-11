@@ -2,6 +2,7 @@ package com.caplin.brjs.plugins.appcache;
 
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.ConfFile;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.exception.ConfigException;
 
 public class AppcacheConf extends ConfFile<YamlAppcacheConf>
@@ -11,14 +12,14 @@ public class AppcacheConf extends ConfFile<YamlAppcacheConf>
 		super(node, YamlAppcacheConf.class, node.file("conf/appcache.conf"));
 	}
 
-	public String getVersion()
+	public String getVersion() throws ConfigException
 	{
-		return conf.version;
+		return getConf().version;
 	}
 
-    public String getVersion(boolean isDev)
+    public String getVersion(RequestMode requestMode) throws ConfigException
     {
-        if(isDev)
+        if(requestMode == RequestMode.Dev)
         {
             return getDevVersion();
         }
@@ -28,9 +29,9 @@ public class AppcacheConf extends ConfFile<YamlAppcacheConf>
         }
     }
 
-    public String getDevVersion()
+    public String getDevVersion() throws ConfigException
     {
-        return conf.devVersion;
+        return getConf().devVersion;
     }
 
 }

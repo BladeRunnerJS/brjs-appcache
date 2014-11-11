@@ -3,6 +3,7 @@ package com.caplin.brjs.plugins.appcache.mocks;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.Locale;
@@ -42,17 +43,14 @@ public class MockCompositeContentPlugin extends AbstractContentPlugin
 
 
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
+	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
 	{
-		return Arrays.asList(new String[] { "compositeDev" });
-	}
-
-	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
-	{
+		if (requestMode == RequestMode.Dev) {
+			return Arrays.asList(new String[] { "compositeDev" });			
+		}
 		return Arrays.asList(new String[] { "compositeProd" });
 	}
-
+	
 	@Override
 	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
 		return null;

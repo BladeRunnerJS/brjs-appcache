@@ -3,6 +3,7 @@ package com.caplin.brjs.plugins.appcache;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -21,7 +22,6 @@ import java.util.List;
 public class AppcacheVersionContentPlugin extends AbstractContentPlugin {
 
     private final ContentPathParser contentPathParser;
-    private BRJS brjs;
 
     {
         ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
@@ -68,7 +68,7 @@ public class AppcacheVersionContentPlugin extends AbstractContentPlugin {
     }
 
     @Override
-    public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException {
+    public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException {
         List<String> requestPaths = new ArrayList<>();
         try
         {
@@ -82,12 +82,6 @@ public class AppcacheVersionContentPlugin extends AbstractContentPlugin {
     }
 
     @Override
-    public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException {
-        return getValidDevContentPaths(bundleSet, locales);
-    }
-
-    @Override
     public void setBRJS(BRJS brjs) {
-        this.brjs = brjs;
     }
 }
