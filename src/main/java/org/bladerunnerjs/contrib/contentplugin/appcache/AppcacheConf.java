@@ -1,4 +1,4 @@
-package com.caplin.brjs.plugins.appcache;
+package org.bladerunnerjs.contrib.contentplugin.appcache;
 
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.ConfFile;

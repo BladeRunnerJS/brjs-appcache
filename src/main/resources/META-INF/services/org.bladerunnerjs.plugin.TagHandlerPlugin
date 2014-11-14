@@ -1,1 +1,1 @@
-com.caplin.brjs.plugins.appcache.AppcacheTagHandlerPlugin
+org.bladerunnerjs.contrib.contentplugin.appcache.AppcacheTagHandlerPlugin

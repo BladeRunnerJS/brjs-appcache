@@ -1,7 +1,7 @@
-package com.caplin.brjs.plugins.appcache.tests;
+package org.bladerunnerjs.contrib.contentplugin.appcache.tests;
 
-import com.caplin.brjs.plugins.appcache.mocks.MockCompositeContentPlugin;
-import com.caplin.brjs.plugins.appcache.mocks.MockContentPlugin;
+import org.bladerunnerjs.contrib.contentplugin.appcache.mocks.MockCompositeContentPlugin;
+import org.bladerunnerjs.contrib.contentplugin.appcache.mocks.MockContentPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;

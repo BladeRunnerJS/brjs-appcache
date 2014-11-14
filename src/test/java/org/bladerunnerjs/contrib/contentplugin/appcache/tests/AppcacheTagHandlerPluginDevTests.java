@@ -1,4 +1,4 @@
-package com.caplin.brjs.plugins.appcache.tests;
+package org.bladerunnerjs.contrib.contentplugin.appcache.tests;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;

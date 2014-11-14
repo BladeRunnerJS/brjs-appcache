@@ -1,2 +1,2 @@
-com.caplin.brjs.plugins.appcache.AppcacheContentPlugin
-com.caplin.brjs.plugins.appcache.AppcacheVersionContentPlugin
+org.bladerunnerjs.contrib.contentplugin.appcache.AppcacheContentPlugin
+org.bladerunnerjs.contrib.contentplugin.appcache.AppcacheVersionContentPlugin

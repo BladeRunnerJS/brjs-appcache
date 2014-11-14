@@ -1,4 +1,4 @@
-package com.caplin.brjs.plugins.appcache.mocks;
+package org.bladerunnerjs.contrib.contentplugin.appcache.mocks;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
@@ -15,7 +15,7 @@ import org.bladerunnerjs.utility.ContentPathParserBuilder;
 import java.util.Arrays;
 import java.util.List;
 
-public class MockContentPlugin extends AbstractContentPlugin
+public class MockCompositeContentPlugin extends AbstractContentPlugin
 {
 	@Override
 	public void setBRJS(BRJS brjs)
@@ -25,13 +25,13 @@ public class MockContentPlugin extends AbstractContentPlugin
 	@Override
 	public String getRequestPrefix()
 	{
-		return "mock";
+		return "mockComposite";
 	}
 
 	@Override
 	public String getCompositeGroupName()
 	{
-		return null;
+		return "composite";
 	}
 
 	@Override
@@ -41,13 +41,14 @@ public class MockContentPlugin extends AbstractContentPlugin
 		return contentPathParserBuilder.build();
 	}
 
+
 	@Override
 	public List<String> getValidContentPaths(BundleSet bundleSet, RequestMode requestMode, Locale... locales) throws ContentProcessingException
 	{
 		if (requestMode == RequestMode.Dev) {
-			return Arrays.asList(new String[] { "devMock", "devSpace Mock" });			
+			return Arrays.asList(new String[] { "compositeDev" });			
 		}
-		return Arrays.asList(new String[] { "prodMock", "prodSpace Mock" });
+		return Arrays.asList(new String[] { "compositeProd" });
 	}
 	
 	@Override

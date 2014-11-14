@@ -1,4 +1,4 @@
-package com.caplin.brjs.plugins.appcache;
+package org.bladerunnerjs.contrib.contentplugin.appcache;
 
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.ConfigException;
