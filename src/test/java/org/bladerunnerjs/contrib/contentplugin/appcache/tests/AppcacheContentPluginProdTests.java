@@ -1,6 +1,7 @@
 package org.bladerunnerjs.contrib.contentplugin.appcache.tests;
 
 import org.bladerunnerjs.contrib.contentplugin.appcache.mocks.MockContentPlugin;
+import org.bladerunnerjs.memoization.MemoizedFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -12,6 +13,7 @@ public class AppcacheContentPluginProdTests extends SpecTest
 {
 	private App app;
 	private Aspect aspect;
+    private MemoizedFile unbundledResources;
 	private StringBuffer pageResponse = new StringBuffer();
 
 	@Before
@@ -23,6 +25,7 @@ public class AppcacheContentPluginProdTests extends SpecTest
 				.and(brjs).hasBeenCreated();
 		app = brjs.app("appcacheApp");
 		aspect = app.aspect("default");
+        unbundledResources = aspect.file("unbundled-resources");
 	}
 
 	@After
@@ -188,6 +191,17 @@ public class AppcacheContentPluginProdTests extends SpecTest
                 .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1.2.3-$brjsVersion");
         when(app).requestReceived("appcache/prod.appcache", pageResponse);
         then(aspect).containsTransientNodeProperty("appcache", "version", "1.2.3-dev");
+    }
+
+    @Test
+    public void testUnbundledResourcesFilesAreListedCorrectly() throws Exception
+    {
+        given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+                .and(aspect).containsFileWithContents("conf/appcache.conf", "version: 1234")
+                .and(unbundledResources).containsFile("some-file");
+        when(app).requestReceived("appcache/prod.appcache", pageResponse);
+        then(pageResponse).containsText("../unbundled-resources/some-file")
+                .and(pageResponse).containsText("../v/dev/unbundled-resources/some-file");
     }
 
 }
