@@ -121,9 +121,16 @@ public class AppcacheManifestBuilder
 			String path = app.createBundleRequest(requestMode, contentPath, brjsVersion);
 			// Spaces need to be URL encoded or the manifest doesnt load the files correctly
 			path = path.replaceAll(" ", "%20");
-			// Path begins with .. as paths are relative to the manifest file,
-			// and the manifest is in the "appcache/" directory
-			cacheFiles.append("../" + path + "\n");
+
+            // Path begins with .. as paths are relative to the manifest file,
+            // and the manifest is in the "appcache/" directory
+            if(!path.startsWith("/")) {
+                path = "../" + path;
+            } else {
+                path = ".." + path;
+            }
+
+            cacheFiles.append(path + "\n");
 		}
 		return cacheFiles.toString();
 	}
