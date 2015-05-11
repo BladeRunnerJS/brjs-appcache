@@ -1,7 +1,7 @@
 package org.bladerunnerjs.contrib.contentplugin.appcache;
 
-import org.bladerunnerjs.model.BRJSNode;
-import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.api.BRJSNode;
+import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.utility.ConfigValidationChecker;
 import org.bladerunnerjs.yaml.AbstractYamlConfFile;
 

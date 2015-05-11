@@ -1,9 +1,9 @@
 package org.bladerunnerjs.contrib.contentplugin.appcache.tests;
 
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.spec.engine.SpecTest;
 import org.bladerunnerjs.contrib.contentplugin.appcache.mocks.MockContentPlugin;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

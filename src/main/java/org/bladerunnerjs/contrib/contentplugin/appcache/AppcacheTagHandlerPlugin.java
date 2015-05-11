@@ -1,13 +1,17 @@
 package org.bladerunnerjs.contrib.contentplugin.appcache;
 
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BundlableNode;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.api.plugin.Locale;
+import org.bladerunnerjs.api.plugin.Plugin;
+import org.bladerunnerjs.api.plugin.RoutableContentPlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractTagHandlerPlugin;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.plugin.Locale;
-import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
+import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
+import org.bladerunnerjs.plugin.proxy.VirtualProxyPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 
 import java.io.IOException;
@@ -34,7 +38,7 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 		try
 		{
 			String requestType = (requestMode == RequestMode.Dev) ? "dev-appcache-request" : "prod-appcache-request";
-			if (isAppcacheEnabled(bundleSet.getBundlableNode(), requestMode))
+			if (isAppcacheEnabled(bundleSet.bundlableNode(), requestMode))
 			{
 				writer.write(".." + contentPathParser.createRequest(requestType));
 			}
@@ -58,7 +62,8 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		this.contentPathParser = brjs.plugins().contentPlugin("appcache").getContentPathParser();
+		Plugin appCachePlugin = (VirtualProxyContentPlugin) brjs.plugins().contentPlugin("appcache");
+		this.contentPathParser = (appCachePlugin.castTo(RoutableContentPlugin.class)).getContentPathParser();
 	}
 
 	private boolean isAppcacheEnabled(BundlableNode node, RequestMode requestMode)

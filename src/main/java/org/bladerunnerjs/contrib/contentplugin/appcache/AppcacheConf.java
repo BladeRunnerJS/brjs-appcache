@@ -1,9 +1,9 @@
 package org.bladerunnerjs.contrib.contentplugin.appcache;
 
-import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.ConfFile;
+import org.bladerunnerjs.api.BundlableNode;
+import org.bladerunnerjs.api.ConfFile;
+import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.model.exception.ConfigException;
 
 public class AppcacheConf extends ConfFile<YamlAppcacheConf>
 {

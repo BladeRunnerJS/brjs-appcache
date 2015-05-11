@@ -1,29 +1,31 @@
 package org.bladerunnerjs.contrib.contentplugin.appcache;
 
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.model.UrlContentAccessor;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.PropertiesException;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.plugin.CharResponseContent;
-import org.bladerunnerjs.plugin.Locale;
-import org.bladerunnerjs.plugin.ResponseContent;
-import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
-import org.bladerunnerjs.utility.ContentPathParser;
-import org.bladerunnerjs.utility.ContentPathParserBuilder;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.PropertiesException;
+import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.api.plugin.CharResponseContent;
+import org.bladerunnerjs.api.plugin.CompositeContentPlugin;
+import org.bladerunnerjs.api.plugin.Locale;
+import org.bladerunnerjs.api.plugin.ResponseContent;
+import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
+import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.RequestMode;
+import org.bladerunnerjs.model.UrlContentAccessor;
+import org.bladerunnerjs.utility.ContentPathParser;
+import org.bladerunnerjs.utility.ContentPathParserBuilder;
+
 /**
  * Generates content for request appcache manifest files.
  */
-public class AppcacheContentPlugin extends AbstractContentPlugin
+public class AppcacheContentPlugin extends AbstractContentPlugin implements CompositeContentPlugin
 {
 
 	private final ContentPathParser contentPathParser;
@@ -80,14 +82,15 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor urlContent, String brjsVersion) throws ContentProcessingException
+	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String brjsVersion) throws MalformedRequestException, ContentProcessingException
 	{
-		if (!contentPath.formName.equals("dev-appcache-request") && !contentPath.formName.equals("prod-appcache-request"))
+		ParsedContentPath parsedContentPath = contentPathParser.parse(contentPath);
+		if (!parsedContentPath.formName.equals("dev-appcache-request") && !parsedContentPath.formName.equals("prod-appcache-request"))
 		{
-			throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
+			throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
 		}
 
-		RequestMode requestMode = (contentPath.formName.equals("dev-appcache-request")) ? RequestMode.Dev : RequestMode.Prod;
+		RequestMode requestMode = (parsedContentPath.formName.equals("dev-appcache-request")) ? RequestMode.Dev : RequestMode.Prod;
         String content = null;
         try {
         	String version = getVersion(bundleSet, requestMode, brjsVersion);
@@ -97,7 +100,7 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
         } catch (ConfigException | PropertiesException | MalformedTokenException e) {
             e.printStackTrace();
         }
-		return new CharResponseContent(bundleSet.getBundlableNode().root(), content);
+		return new CharResponseContent(bundleSet.bundlableNode().root(), content);
 
 	}
 
@@ -115,7 +118,7 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
     {
         AppcacheConf config = null;
         try {
-            config = new AppcacheConf(bundleSet.getBundlableNode());
+            config = new AppcacheConf(bundleSet.bundlableNode());
         } catch (ConfigException e) {
             e.printStackTrace();
         }
@@ -133,7 +136,7 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
             }
         }
 
-        bundleSet.getBundlableNode().nodeProperties("appcache").setTransientProperty("version", version);
+        bundleSet.bundlableNode().nodeProperties("appcache").setTransientProperty("version", version);
 
         return version;
     }

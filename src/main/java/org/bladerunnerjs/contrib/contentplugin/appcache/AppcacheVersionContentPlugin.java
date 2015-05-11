@@ -1,25 +1,26 @@
 package org.bladerunnerjs.contrib.contentplugin.appcache;
 
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundleSet;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.api.plugin.CharResponseContent;
+import org.bladerunnerjs.api.plugin.CompositeContentPlugin;
+import org.bladerunnerjs.api.plugin.Locale;
+import org.bladerunnerjs.api.plugin.ResponseContent;
+import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.plugin.CharResponseContent;
-import org.bladerunnerjs.plugin.Locale;
-import org.bladerunnerjs.plugin.ResponseContent;
-import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.appmeta.AppMetadataContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-public class AppcacheVersionContentPlugin extends AbstractContentPlugin {
+public class AppcacheVersionContentPlugin extends AbstractContentPlugin implements CompositeContentPlugin {
 
     private final ContentPathParser contentPathParser;
 
@@ -45,18 +46,14 @@ public class AppcacheVersionContentPlugin extends AbstractContentPlugin {
     }
 
     @Override
-    public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-        return Arrays.asList(AppMetadataContentPlugin.class.getCanonicalName());
-    }
-
-    @Override
-    public ResponseContent handleRequest(ParsedContentPath parsedContentPath, BundleSet bundleSet, UrlContentAccessor urlContentAccessor, String brjsVersion) throws ContentProcessingException {
+    public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String brjsVersion) throws MalformedRequestException, ContentProcessingException {
+    	ParsedContentPath parsedContentPath = contentPathParser.parse(contentPath);
         if (!parsedContentPath.formName.equals("appcache-version-request"))
         {
             throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
         }
 
-        String version = (String) bundleSet.getBundlableNode().nodeProperties("appcache").getTransientProperty("version");
+        String version = (String) bundleSet.bundlableNode().nodeProperties("appcache").getTransientProperty("version");
         String content = "window.$BRJS_APPCACHE_VERSION = ";
 
         if(version != null) {
@@ -64,7 +61,7 @@ public class AppcacheVersionContentPlugin extends AbstractContentPlugin {
         } else {
             content += "null;";
         }
-        return new CharResponseContent(bundleSet.getBundlableNode().root(), content);
+        return new CharResponseContent(bundleSet.bundlableNode().root(), content);
     }
 
     @Override

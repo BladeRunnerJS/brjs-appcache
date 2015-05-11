@@ -1,15 +1,18 @@
 package org.bladerunnerjs.contrib.contentplugin.appcache;
 
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.api.App;
+import org.bladerunnerjs.api.Aspect;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BundlableNode;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.PropertiesException;
+import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.api.plugin.CompositeContentPlugin;
+import org.bladerunnerjs.api.plugin.ContentPlugin;
+import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.PropertiesException;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.plugin.ContentPlugin;
-import org.bladerunnerjs.plugin.Locale;
 
 /**
  * Builds manifest file strings based on a given set of parameters.
@@ -104,13 +107,19 @@ public class AppcacheManifestBuilder
 		// these files are already bundled inside the composite file and don't need to be
 		// also cached (in fact they are left out of the built prod app and cant be cached)
 		boolean isDev = requestMode == RequestMode.Dev;
-		if (!isDev && plugin.getCompositeGroupName() != null)
+		
+		if (!isDev && plugin.instanceOf(CompositeContentPlugin.class) && (plugin.castTo(CompositeContentPlugin.class)).getCompositeGroupName() != null)
 		{
 			return "";
 		}
 
 		StringBuilder cacheFiles = new StringBuilder();
-		App app = bundleSet.getBundlableNode().app();
+		BundlableNode bundlableNode = bundleSet.bundlableNode();
+		if (!(bundlableNode instanceof Aspect)) {
+			return "";
+		}
+		App app = bundleSet.bundlableNode().app();
+		Aspect aspect  = (Aspect) bundlableNode;
 		for (String contentPath : plugin.getUsedContentPaths(bundleSet, requestMode, languages))
 		{
             // Do not specify the manifest itself in the cache manifest file, otherwise it
@@ -118,7 +127,7 @@ public class AppcacheManifestBuilder
             if(plugin.instanceOf(AppcacheContentPlugin.class) && (contentPath.equals("/appcache/dev.appcache") || contentPath.equals("/appcache/prod.appcache"))) {
                 continue;
             }
-			String path = app.createBundleRequest(requestMode, contentPath, brjsVersion);
+			String path = app.requestHandler().createBundleRequest(aspect, contentPath, brjsVersion);
 			// Spaces need to be URL encoded or the manifest doesnt load the files correctly
 			path = path.replaceAll(" ", "%20");
 			// Path begins with .. as paths are relative to the manifest file,
@@ -134,7 +143,7 @@ public class AppcacheManifestBuilder
 	 */
 	private Locale[] getConfiguredLocales() throws ConfigException
 	{
-		Locale[] locales = bundleSet.getBundlableNode().app().appConf().getLocales();
+		Locale[] locales = bundleSet.bundlableNode().app().appConf().getLocales();
 
 		if (locales.length == 0)
 		{
