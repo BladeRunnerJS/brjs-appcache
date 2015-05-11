@@ -7,7 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AppcacheTagHandlerPluginDevTests extends SpecTest
+public class AppcacheTagHandlerPluginTests extends SpecTest
 {
 	private App app;
 	private Aspect aspect;
@@ -30,45 +30,11 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 	}
 
 	@Test
-	public void tagIsDisabledWithNoConfigFile() throws Exception
-	{
-		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'");
-
-		when(aspect).indexPageLoadedInDev(pageResponse, "en");
-
-		then(pageResponse).containsText("manifest='appcache-disabled'");
-	}
-
-	@Test
-	public void appcacheUrlTagIsDisabledWithEmptyConfigFile() throws Exception
-	{
-		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
-			.and(aspect).containsFileWithContents("conf/appcache.conf", "");
-
-		when(aspect).indexPageLoadedInDev(pageResponse, "en");
-
-		then(pageResponse).containsText("manifest='appcache-disabled'");
-	}
-
-	@Test
-	public void tagHasContentWithBlankVersionGiven() throws Exception
-	{
-		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
-			.and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: ");
-
-		when(aspect).indexPageLoadedInDev(pageResponse, "en");
-
-		then(pageResponse).containsText("manifest='../appcache/dev.appcache'");
-	}
-
-	@Test
 	public void tagHasContentWithVersionGiven() throws Exception
 	{
 		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
-			.and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: 1234");
-
+			.and(brjs).hasVersion("1234");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en");
-
 		then(pageResponse).containsText("manifest='../appcache/dev.appcache'");
 	}
 	
@@ -76,12 +42,10 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 	public void tagHas404FileWhenVersionRemovedAfterPreviouslyHavingVersion() throws Exception
 	{
 		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
-			.and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: 1234");
-
+			.and(brjs).hasVersion("1234");
 		when(aspect).indexPageLoadedInDev(new StringBuffer(), "en")
-			.and(aspect).containsFileWithContents("conf/appcache.conf", "")
+			.and(brjs).hasVersion("")
 			.and(aspect).indexPageLoadedInDev(pageResponse, "en");
-		
 		then(pageResponse).containsText("manifest='appcache-disabled'");
 	}
 	
@@ -89,11 +53,11 @@ public class AppcacheTagHandlerPluginDevTests extends SpecTest
 	public void tagRemainsDisabledAfterHaving404() throws Exception
 	{
 		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
-			.and(aspect).containsFileWithContents("conf/appcache.conf", "devVersion: 1234");
+			.and(brjs).hasVersion("1234");
 
 		StringBuffer firstTwoResponses = new StringBuffer();
 		when(aspect).indexPageLoadedInDev(firstTwoResponses, "en")
-			.and(aspect).containsFileWithContents("conf/appcache.conf", "")
+			.and(brjs).hasVersion("")
 			.and(aspect).indexPageLoadedInDev(firstTwoResponses, "en")
 			.and(aspect).indexPageLoadedInDev(pageResponse, "en");
 		

@@ -1,9 +1,7 @@
 package org.bladerunnerjs.contrib.contentplugin.appcache;
 
 import org.bladerunnerjs.api.BRJS;
-import org.bladerunnerjs.api.BundlableNode;
 import org.bladerunnerjs.api.BundleSet;
-import org.bladerunnerjs.api.model.exception.ConfigException;
 import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.Plugin;
@@ -11,7 +9,6 @@ import org.bladerunnerjs.api.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.api.plugin.base.AbstractTagHandlerPlugin;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
-import org.bladerunnerjs.plugin.proxy.VirtualProxyPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 
 import java.io.IOException;
@@ -38,7 +35,7 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 		try
 		{
 			String requestType = (requestMode == RequestMode.Dev) ? "dev-appcache-request" : "prod-appcache-request";
-			if (isAppcacheEnabled(bundleSet.bundlableNode(), requestMode))
+			if (!version.equals("dev") && version.length() > 0)
 			{
 				writer.write(".." + contentPathParser.createRequest(requestType));
 			}
@@ -65,21 +62,5 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 		Plugin appCachePlugin = (VirtualProxyContentPlugin) brjs.plugins().contentPlugin("appcache");
 		this.contentPathParser = (appCachePlugin.castTo(RoutableContentPlugin.class)).getContentPathParser();
 	}
-
-	private boolean isAppcacheEnabled(BundlableNode node, RequestMode requestMode)
-	{
-        String version = null;
-        try {
-            AppcacheConf config = new AppcacheConf(node);
-            if (config != null)
-            {
-                version = config.getVersion(requestMode);
-            }
-        } catch (ConfigException e) {
-            e.printStackTrace();
-        }
-
-        return version != null;
-    }
 
 }

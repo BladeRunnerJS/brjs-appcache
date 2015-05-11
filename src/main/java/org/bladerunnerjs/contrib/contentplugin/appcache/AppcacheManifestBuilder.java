@@ -22,25 +22,23 @@ public class AppcacheManifestBuilder
 	private BRJS brjs;
 	private BundleSet bundleSet;
 	private String version;
-	private String brjsVersion;
 
 	/**
 	 * Creates an {@link AppcacheManifestBuilder} instance for generating prod manifest files.
 	 */
-	public AppcacheManifestBuilder(BRJS brjs, BundleSet bundleSet, String brjsVersion, String version)
+	public AppcacheManifestBuilder(BRJS brjs, BundleSet bundleSet, String version)
 	{
-		this(brjs, bundleSet, brjsVersion, version, RequestMode.Prod);
+		this(brjs, bundleSet, version, RequestMode.Prod);
 	}
 
 	/**
 	 * Creates an {@link AppcacheManifestBuilder} instance for generating prod or dev manifest
 	 * files, depending on the value of the isDev parameter.
 	 */
-	public AppcacheManifestBuilder(BRJS brjs, BundleSet bundleSet, String brjsVersion, String version, RequestMode requestMode)
+	public AppcacheManifestBuilder(BRJS brjs, BundleSet bundleSet, String version, RequestMode requestMode)
 	{
 		this.brjs = brjs;
 		this.bundleSet = bundleSet;
-        this.brjsVersion = brjsVersion;
 		this.version = version;
 	}
 
@@ -127,7 +125,7 @@ public class AppcacheManifestBuilder
             if(plugin.instanceOf(AppcacheContentPlugin.class) && (contentPath.equals("/appcache/dev.appcache") || contentPath.equals("/appcache/prod.appcache"))) {
                 continue;
             }
-			String path = app.requestHandler().createBundleRequest(aspect, contentPath, brjsVersion);
+			String path = app.requestHandler().createBundleRequest(aspect, contentPath, version);
 			// Spaces need to be URL encoded or the manifest doesnt load the files correctly
 			path = path.replaceAll(" ", "%20");
 			// Path begins with .. as paths are relative to the manifest file,

@@ -1,7 +1,6 @@
 package org.bladerunnerjs.contrib.contentplugin.appcache;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.bladerunnerjs.api.BRJS;
@@ -82,7 +81,7 @@ public class AppcacheContentPlugin extends AbstractContentPlugin implements Comp
 	}
 
 	@Override
-	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String brjsVersion) throws MalformedRequestException, ContentProcessingException
+	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ContentProcessingException
 	{
 		ParsedContentPath parsedContentPath = contentPathParser.parse(contentPath);
 		if (!parsedContentPath.formName.equals("dev-appcache-request") && !parsedContentPath.formName.equals("prod-appcache-request"))
@@ -93,8 +92,7 @@ public class AppcacheContentPlugin extends AbstractContentPlugin implements Comp
 		RequestMode requestMode = (parsedContentPath.formName.equals("dev-appcache-request")) ? RequestMode.Dev : RequestMode.Prod;
         String content = null;
         try {
-        	String version = getVersion(bundleSet, requestMode, brjsVersion);
-        	AppcacheManifestBuilder manifestBuilder = new AppcacheManifestBuilder(brjs, bundleSet, brjsVersion, version, requestMode);
+        	AppcacheManifestBuilder manifestBuilder = new AppcacheManifestBuilder(brjs, bundleSet, version, requestMode);
 
             content = manifestBuilder.getManifest(requestMode);
         } catch (ConfigException | PropertiesException | MalformedTokenException e) {
@@ -103,42 +101,5 @@ public class AppcacheContentPlugin extends AbstractContentPlugin implements Comp
 		return new CharResponseContent(bundleSet.bundlableNode().root(), content);
 
 	}
-
-	/**************************************
-	 * 
-	 * Private
-	 * 
-	 **************************************/
-
-    /**
-     * Gets the version number from the config file, with special tokens such as $timestamp and $brjsVersion replaced.
-     * @throws ConfigException 
-     */
-    private String getVersion(BundleSet bundleSet, RequestMode requestMode, String brjsVersion) throws ConfigException
-    {
-        AppcacheConf config = null;
-        try {
-            config = new AppcacheConf(bundleSet.bundlableNode());
-        } catch (ConfigException e) {
-            e.printStackTrace();
-        }
-
-        String version = null;
-        if (config != null)
-        {
-            version = config.getVersion(requestMode);
-
-            if(version != null)
-            {
-                version = config.getVersion(requestMode);
-                version = version.replaceAll("\\$timestamp", "" + new Date().getTime());
-                version = version.replaceAll("\\$brjsVersion", brjsVersion);
-            }
-        }
-
-        bundleSet.bundlableNode().nodeProperties("appcache").setTransientProperty("version", version);
-
-        return version;
-    }
 
 }
