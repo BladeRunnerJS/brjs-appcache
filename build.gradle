@@ -25,24 +25,7 @@ task copyToConf, type: Copy, dependsOn: jar, {
 	}
 }
 
-task copyToApps, type: Copy, dependsOn: jar, {
-	destinationDir file("${brjsPath}/apps")
-	file("${brjsPath}/apps").listFiles().each {
-		if (it.isDirectory()) {
-			into ("${it.name}/WEB-INF/lib") {
-				from jar.outputs.files.singleFile
-			}
-		}
-	}
-	doFirst {
-		fileTree(dir:"${brjsPath}/apps", include:"*/WEB-INF/lib/${project.name}.jar").each { delete it }
-	}
-	doLast {
-		println "${project.name} jar copied to ${brjsPath}/apps/*/WEB-INF/lib"
-	}
-}
-
-task copyToBrjs, dependsOn: [copyToConf, copyToApps], {
+task copyToBrjs, dependsOn: [copyToConf], {
 }
 
 // automatically add brjs-core sources jar for Eclipse classpath
