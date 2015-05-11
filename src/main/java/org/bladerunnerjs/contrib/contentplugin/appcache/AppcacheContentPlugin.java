@@ -11,9 +11,9 @@ import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.api.plugin.CharResponseContent;
-import org.bladerunnerjs.api.plugin.CompositeContentPlugin;
 import org.bladerunnerjs.api.plugin.Locale;
 import org.bladerunnerjs.api.plugin.ResponseContent;
+import org.bladerunnerjs.api.plugin.RoutableContentPlugin;
 import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
@@ -24,7 +24,7 @@ import org.bladerunnerjs.utility.ContentPathParserBuilder;
 /**
  * Generates content for request appcache manifest files.
  */
-public class AppcacheContentPlugin extends AbstractContentPlugin implements CompositeContentPlugin
+public class AppcacheContentPlugin extends AbstractContentPlugin implements RoutableContentPlugin
 {
 
 	private final ContentPathParser contentPathParser;
@@ -44,12 +44,6 @@ public class AppcacheContentPlugin extends AbstractContentPlugin implements Comp
 	public String getRequestPrefix()
 	{
 		return "appcache";
-	}
-
-	@Override
-	public String getCompositeGroupName()
-	{
-		return null;
 	}
 
 	@Override
@@ -93,13 +87,11 @@ public class AppcacheContentPlugin extends AbstractContentPlugin implements Comp
         String content = null;
         try {
         	AppcacheManifestBuilder manifestBuilder = new AppcacheManifestBuilder(brjs, bundleSet, version, requestMode);
-
             content = manifestBuilder.getManifest(requestMode);
         } catch (ConfigException | PropertiesException | MalformedTokenException e) {
-            e.printStackTrace();
+            throw new ContentProcessingException(e);
         }
 		return new CharResponseContent(bundleSet.bundlableNode().root(), content);
-
 	}
 
 }
