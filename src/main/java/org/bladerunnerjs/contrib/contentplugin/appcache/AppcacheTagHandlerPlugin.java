@@ -1,5 +1,6 @@
 package org.bladerunnerjs.contrib.contentplugin.appcache;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.api.BRJS;
 import org.bladerunnerjs.api.BundleSet;
 import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
@@ -37,7 +38,9 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 			String requestType = (requestMode == RequestMode.Dev) ? "dev-appcache-request" : "prod-appcache-request";
 			if (!version.equals("dev") && version.length() > 0)
 			{
-				writer.write(".." + contentPathParser.createRequest(requestType));
+				String request = contentPathParser.createRequest(requestType);
+				request = StringUtils.substringAfter(request, "/"); // strip the leading / as we want a path relative to the index page
+				writer.write( request );
 			}
 			else if (requestMode == RequestMode.Prod) {
 				return;

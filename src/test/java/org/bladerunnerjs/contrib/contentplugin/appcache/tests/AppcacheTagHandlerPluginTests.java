@@ -35,7 +35,7 @@ public class AppcacheTagHandlerPluginTests extends SpecTest
 		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
 			.and(brjs).hasVersion("1234");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en");
-		then(pageResponse).containsText("manifest='../appcache/dev.appcache'");
+		then(pageResponse).containsText("manifest='appcache/dev.appcache'");
 	}
 	
 	@Test

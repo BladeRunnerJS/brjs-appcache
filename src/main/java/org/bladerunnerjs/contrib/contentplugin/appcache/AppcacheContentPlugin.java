@@ -86,7 +86,7 @@ public class AppcacheContentPlugin extends AbstractContentPlugin implements Rout
 		RequestMode requestMode = (parsedContentPath.formName.equals("dev-appcache-request")) ? RequestMode.Dev : RequestMode.Prod;
         String content = null;
         try {
-        	AppcacheManifestBuilder manifestBuilder = new AppcacheManifestBuilder(brjs, bundleSet, version, requestMode);
+        	AppcacheManifestBuilder manifestBuilder = new AppcacheManifestBuilder(brjs, bundleSet, version);
             content = manifestBuilder.getManifest(requestMode);
         } catch (ConfigException | PropertiesException | MalformedTokenException e) {
             throw new ContentProcessingException(e);

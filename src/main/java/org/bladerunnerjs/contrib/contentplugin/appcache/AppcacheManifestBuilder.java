@@ -27,7 +27,7 @@ public class AppcacheManifestBuilder
 	 * Creates an {@link AppcacheManifestBuilder} instance for generating prod or dev manifest
 	 * files, depending on the value of the isDev parameter.
 	 */
-	public AppcacheManifestBuilder(BRJS brjs, BundleSet bundleSet, String version, RequestMode requestMode)
+	public AppcacheManifestBuilder(BRJS brjs, BundleSet bundleSet, String version)
 	{
 		this.brjs = brjs;
 		this.bundleSet = bundleSet;
@@ -111,7 +111,11 @@ public class AppcacheManifestBuilder
 			path = path.replaceAll(" ", "%20");
 			// Path begins with .. as paths are relative to the manifest file,
 			// and the manifest is in the "appcache/" directory
-			cacheFiles.append("../" + path + "\n");
+			if (path.startsWith("/")) {
+				cacheFiles.append(".." + path + "\n");
+			} else {
+				cacheFiles.append("../" + path + "\n");				
+			}
 		}
 		return cacheFiles.toString();
 	}
