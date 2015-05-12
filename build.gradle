@@ -11,6 +11,10 @@ repositories {
 	mavenCentral()
 }
 
+if (!project.hasProperty("brjsPath")) {
+	throw new GradleException("The property 'brjsPath' must be set in gradle.properties")
+}
+
 dependencies {
 	compile fileTree(dir:brjsPath, include:"sdk/libs/java/system/*.jar")
 
