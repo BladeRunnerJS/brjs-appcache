@@ -7,6 +7,11 @@ apply plugin: 'java'
 sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
 
+version = org.bladerunnerjs.BuildVersionCalculator.calculateVersion(project)
+group = 'org.bladerunnerjs.contrib'
+
+logger.info "Build version calculated as: ${version}"
+
 repositories {
 	mavenCentral()
 }

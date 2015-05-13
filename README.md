@@ -56,6 +56,13 @@ If you are using either Eclipse or IntelliJ IDEA for development, follow the ins
 - Once the build has passed, your generated plugin JAR is placed in the project `build/lib` directory.
 - You can run `./gradlew copyToBrjs` to automatically build and copy your jar to the `conf/java` directory inside of BRJS.
 
+### Releasing
+The release process is very similar to the BRJS project.
+- Create a new annotated tag. It must be annotated as `git describe` which is used for version calulcation will only match annotated tags.
+- Run `gradle clean build` to generate the artifact which will be placed in `build/libs`
+- Push the tag using `git push <remote> <tagname`.
+- Manually create the release and upload the artifact via GitHub.
+
 ## BRJS Compatability
 Ensure you use the correct version of the plugin for your BRJS version:
 
