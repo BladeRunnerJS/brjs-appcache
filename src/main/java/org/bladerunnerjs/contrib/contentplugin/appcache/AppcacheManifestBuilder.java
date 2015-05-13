@@ -91,6 +91,10 @@ public class AppcacheManifestBuilder
 		{
 			return "";
 		}
+		
+		if ( version.equals("dev") || version.length() == 0 ) {
+			return "";
+		}
 
 		StringBuilder cacheFiles = new StringBuilder();
 		BundlableNode bundlableNode = bundleSet.bundlableNode();

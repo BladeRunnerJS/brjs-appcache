@@ -114,5 +114,13 @@ public class AppcacheContentPluginTests extends SpecTest
 		when(app).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).containsText("../v/1234/devMock");
 	}
+	
+	@Test // if the appcache is disabled the manifest should be empty so the browser doesn't load a cached index.html and still attempt to validate against the manifest contents
+	public void manifestIsEmptyIfTheCacheIsDisabled() throws Exception
+	{
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated();
+		when(app).requestReceived("appcache/dev.appcache", pageResponse);
+		then(pageResponse).doesNotContainText("../v/");
+	}
 
 }

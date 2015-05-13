@@ -36,14 +36,11 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 		try
 		{
 			String requestType = (requestMode == RequestMode.Dev) ? "dev-appcache-request" : "prod-appcache-request";
-			if (!version.equals("dev") && version.length() > 0)
+			if ( (!version.equals("dev") && version.length() > 0) || requestMode == RequestMode.Prod)
 			{
 				String request = contentPathParser.createRequest(requestType);
 				request = StringUtils.substringAfter(request, "/"); // strip the leading / as we want a path relative to the index page
 				writer.write( request );
-			}
-			else if (requestMode == RequestMode.Prod) {
-				return;
 			}
 			else
 			{
