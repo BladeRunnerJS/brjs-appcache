@@ -46,10 +46,10 @@ public class AppcacheManifestBuilder
 	public String getManifest(RequestMode requestMode) throws PropertiesException, ContentProcessingException, ConfigException, MalformedTokenException
 	{
 		StringBuilder manifest = new StringBuilder();
-		manifest.append( getManifestHeader() );
-		manifest.append( getManifestCacheFiles(requestMode) );
-		manifest.append( getManifestNetworkFiles() );
-		return manifest.toString();
+		appendManifestHeader(manifest);
+		appendManifestCacheFiles(manifest, requestMode);
+		appendManifestNetworkFiles(manifest);
+		return manifest.toString(); 
 	}
 
 	/**************************************
@@ -58,29 +58,24 @@ public class AppcacheManifestBuilder
 	 * 
 	 **************************************/
 
-	private String getManifestHeader() throws PropertiesException
+	private void appendManifestHeader(StringBuilder manifest) throws PropertiesException
 	{
-        String header = "CACHE MANIFEST\n";
-        header += "# v" + version + "\n\n";
-		return header;
+        manifest.append("CACHE MANIFEST\n");
+        manifest.append("# v" + version + "\n\n");
 	}
 
-	private String getManifestCacheFiles(RequestMode requestMode) throws ContentProcessingException, ConfigException, MalformedTokenException, PropertiesException {
-		StringBuilder cacheFiles = new StringBuilder();
-        cacheFiles.append("CACHE:\n");
+	private void appendManifestCacheFiles(StringBuilder manifest, RequestMode requestMode) throws ContentProcessingException, ConfigException, MalformedTokenException, PropertiesException {
+		manifest.append("CACHE:\n");
 
         // See #getContentPaths for an explanation on why we need configured languages
         for (ContentPlugin plugin : brjs.plugins().contentPlugins())
         {
-            String pluginCacheFiles = getManifestCacheFilesForPlugin(requestMode, plugin, bundleSet.bundlableNode().app().appConf().getLocales());
-            cacheFiles.append(pluginCacheFiles);
+            appendManifestCacheFilesForPlugin(manifest, requestMode, plugin, bundleSet.bundlableNode().app().appConf().getLocales());
         }
-        cacheFiles.append("\n");
-
-		return cacheFiles.toString();
+        manifest.append("\n");
 	}
 
-	private String getManifestCacheFilesForPlugin(RequestMode requestMode, ContentPlugin plugin, Locale[] languages) throws ContentProcessingException, MalformedTokenException
+	private void appendManifestCacheFilesForPlugin(StringBuilder manifest, RequestMode requestMode, ContentPlugin plugin, Locale[] languages) throws ContentProcessingException, MalformedTokenException
 	{
 		// Don't specify plugins that are part of a composite in the manifest in prod;
 		// these files are already bundled inside the composite file and don't need to be
@@ -89,17 +84,16 @@ public class AppcacheManifestBuilder
 		
 		if ( !isDev && (plugin.instanceOf(CompositeContentPlugin.class) && (plugin.castTo(CompositeContentPlugin.class)).getCompositeGroupName() != null) )
 		{
-			return "";
+			return;
 		}
 		
 		if ( version.equals("dev") || version.length() == 0 ) {
-			return "";
+			return;
 		}
-
-		StringBuilder cacheFiles = new StringBuilder();
+		
 		BundlableNode bundlableNode = bundleSet.bundlableNode();
 		if (!(bundlableNode instanceof Aspect)) {
-			return "";
+			return;
 		}
 		App app = bundleSet.bundlableNode().app();
 		Aspect aspect  = (Aspect) bundlableNode;
@@ -116,19 +110,18 @@ public class AppcacheManifestBuilder
 			// Path begins with .. as paths are relative to the manifest file,
 			// and the manifest is in the "appcache/" directory
 			if (path.startsWith("/")) {
-				cacheFiles.append(".." + path + "\n");
+				manifest.append(".." + path + "\n");
 			} else {
-				cacheFiles.append("../" + path + "\n");				
+				manifest.append("../" + path + "\n");				
 			}
 		}
-		return cacheFiles.toString();
 	}
 
 	/**
 	 * Generates the manifest NETWORK section string
 	 */
-	private String getManifestNetworkFiles()
+	private void appendManifestNetworkFiles(StringBuilder manifest)
 	{
-		return "NETWORK:\n*";
+		manifest.append("NETWORK:\n*");
 	}
 }

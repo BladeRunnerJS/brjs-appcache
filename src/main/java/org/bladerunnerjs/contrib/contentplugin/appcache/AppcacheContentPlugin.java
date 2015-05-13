@@ -91,7 +91,7 @@ public class AppcacheContentPlugin extends AbstractContentPlugin implements Rout
         } catch (ConfigException | PropertiesException | MalformedTokenException e) {
             throw new ContentProcessingException(e);
         }
-		return new CharResponseContent(bundleSet.bundlableNode().root(), content);
+        return new CharResponseContent(bundleSet.bundlableNode().root(), content);
 	}
 
 }
