@@ -20,7 +20,7 @@ The plugin automatically generates a manifest file listing the files to cache at
 
 <a name="configuration"></a>
 ### Configuration
-- By default thje appcache is disabled in 'dev' and a URL that returns a 404 response will be used to disable the cache
+- By default the appcache is disabled in 'dev' and a URL that returns a 404 response will be used to disable the cache
 - The appcache version is configured via the `BRJS` version property.
 - To enable the appcache in 'dev' the version should be changed to a numbered version. To do this run the `serve` command 
 with the 'version' argument, for example `brjs serve -v 1.2.3`. A timestamp will be appended to the 
