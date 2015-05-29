@@ -1,29 +1,30 @@
 package org.bladerunnerjs.contrib.contentplugin.appcache;
 
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundleSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.model.exception.ConfigException;
+import org.bladerunnerjs.api.model.exception.PropertiesException;
+import org.bladerunnerjs.api.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.api.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.api.plugin.CharResponseContent;
+import org.bladerunnerjs.api.plugin.Locale;
+import org.bladerunnerjs.api.plugin.ResponseContent;
+import org.bladerunnerjs.api.plugin.RoutableContentPlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.UrlContentAccessor;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.PropertiesException;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.plugin.CharResponseContent;
-import org.bladerunnerjs.plugin.Locale;
-import org.bladerunnerjs.plugin.ResponseContent;
-import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Generates content for request appcache manifest files.
  */
-public class AppcacheContentPlugin extends AbstractContentPlugin
+public class AppcacheContentPlugin extends AbstractContentPlugin implements RoutableContentPlugin
 {
 
 	private final ContentPathParser contentPathParser;
@@ -43,12 +44,6 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 	public String getRequestPrefix()
 	{
 		return "appcache";
-	}
-
-	@Override
-	public String getCompositeGroupName()
-	{
-		return null;
 	}
 
 	@Override
@@ -80,62 +75,23 @@ public class AppcacheContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor urlContent, String brjsVersion) throws ContentProcessingException
+	public ResponseContent handleRequest(String contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ContentProcessingException
 	{
-		if (!contentPath.formName.equals("dev-appcache-request") && !contentPath.formName.equals("prod-appcache-request"))
+		ParsedContentPath parsedContentPath = contentPathParser.parse(contentPath);
+		if (!parsedContentPath.formName.equals("dev-appcache-request") && !parsedContentPath.formName.equals("prod-appcache-request"))
 		{
-			throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
+			throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
 		}
 
-		RequestMode requestMode = (contentPath.formName.equals("dev-appcache-request")) ? RequestMode.Dev : RequestMode.Prod;
+		RequestMode requestMode = (parsedContentPath.formName.equals("dev-appcache-request")) ? RequestMode.Dev : RequestMode.Prod;
         String content = null;
         try {
-        	String version = getVersion(bundleSet, requestMode, brjsVersion);
-        	AppcacheManifestBuilder manifestBuilder = new AppcacheManifestBuilder(brjs, bundleSet, brjsVersion, version, requestMode);
-
+        	AppcacheManifestBuilder manifestBuilder = new AppcacheManifestBuilder(brjs, bundleSet, version);
             content = manifestBuilder.getManifest(requestMode);
         } catch (ConfigException | PropertiesException | MalformedTokenException e) {
-            e.printStackTrace();
+            throw new ContentProcessingException(e);
         }
-		return new CharResponseContent(bundleSet.getBundlableNode().root(), content);
-
+        return new CharResponseContent(bundleSet.bundlableNode().root(), content);
 	}
-
-	/**************************************
-	 * 
-	 * Private
-	 * 
-	 **************************************/
-
-    /**
-     * Gets the version number from the config file, with special tokens such as $timestamp and $brjsVersion replaced.
-     * @throws ConfigException 
-     */
-    private String getVersion(BundleSet bundleSet, RequestMode requestMode, String brjsVersion) throws ConfigException
-    {
-        AppcacheConf config = null;
-        try {
-            config = new AppcacheConf(bundleSet.getBundlableNode());
-        } catch (ConfigException e) {
-            e.printStackTrace();
-        }
-
-        String version = null;
-        if (config != null)
-        {
-            version = config.getVersion(requestMode);
-
-            if(version != null)
-            {
-                version = config.getVersion(requestMode);
-                version = version.replaceAll("\\$timestamp", "" + new Date().getTime());
-                version = version.replaceAll("\\$brjsVersion", brjsVersion);
-            }
-        }
-
-        bundleSet.getBundlableNode().nodeProperties("appcache").setTransientProperty("version", version);
-
-        return version;
-    }
 
 }

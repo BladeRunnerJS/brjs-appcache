@@ -1,42 +1,36 @@
 # BRJS Appcache Plugin
 
-A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_the_application_cache) support in [BRJS applications](http://bladerunnerjs.org/). The plugin automatically generates a manifest file listing the files to cache at a specific URL, so you don't need to manage it yourself.
+A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_the_application_cache) support in [BRJS applications](http://bladerunnerjs.org/).
+The plugin automatically generates a manifest file listing the files to cache at a specific URL, so you don't need to manage it yourself.
 
 ## Quick start
-- Download the [latest release of the plugin](https://github.com/caplin/brjs-appcache/releases/latest) (`appcache-plugin.jar`).
+- Download the latest `appcache-plugin.jar` at https://github.com/BladeRunnerJS/brjs-appcache/releases
 - Copy the plugin JAR to the BRJS `conf/java` folder.
-- Copy the plugin JAR to the BRJS `apps/<your-app>/WEB-INF/lib` folder.
 - Add the appcache plugin tag to your HTML element e.g. `<html manifest="<@appcache.url@/>">`
-
-> Remember it's *disabled by default*, so you'll need to [enable it](#enabling) to see the appcache in action.
 
 ## Usage
 
 ### Installation
 - Copy the plugin JAR to the BRJS `conf/java` folder.
-- Copy the plugin JAR to the BRJS `apps/<your-app>/WEB-INF/lib` folder for any apps you want to use the plugin.
-
-> This is a requirement of BRJS <= v0.9, in the future the plugin deployment process may change.
 
 <a name="enabling"></a>
 ### Enabling
-- To link it in to your application the plugin provides the `appcache.url` tag handler. This tag will replaced with the URL to the manifest file, so you should set the `manifest` attribute on the `html` element to use the tag as its value.
-    - In other words your html element should look something like `<html manifest="<@appcache.url@/>">`
-- The manifest URL is blank by default so the appcache will not be used. You can enable the appcache by specifying an appcache version in the config file.
-    - See the [Configuration](#configuration) section for details on how to do this.
-
-> The HTML `<base href="..." />` tag is incompatible with the appcache plugin. BRJS <= v0.8 applications by default are created with the base tag in `index.html`, so *this will need to be removed before the appcache plugin will work*. This is OK - the use of the base tag was added by bladerunner to replicate some of the appcache functionality, but now you're using the real thing you don't need it any more!
+- The plugin provides the `appcache.url` tag handler. This tag will replaced with the URL to the manifest file, so you should set the `manifest` attribute on the `html` element to use the tag as its value.
+    - To do this change the `html` element to `<html manifest="<@appcache.url@/>">`
 
 <a name="configuration"></a>
 ### Configuration
-- Appcache is configured at an aspect level, as different aspects will use different appcaches.
-- A config file named `appcache.conf` is looked for in the `<aspect>/conf` folder. It supports the following properties in [YAML format](http://en.wikipedia.org/wiki/YAML#Examples) (i.e. `property: value`):
-    - `version` a specific version to use for the appcache manifest in prod.
-    - `devVersion` a specific version to use for the appcache manifest in dev.
-- The appcache version options support some special variables to make managing the versions easier:
-   - `$timestamp` will be replaced with the current timestamp when the manifest is generated.
-   - `$brjsVersion` will be replaced with the current BRJS version being used (e.g. what appears in the file paths as /v/version/)
-- Only files for the listed locales are cached. The locales configuration is standard BRJS functionality, and can be found in the `<your-app>/app.conf` file.
+- By default the appcache is disabled in 'dev' and a URL that returns a 404 response will be used to disable the cache
+- The appcache version is configured via the `BRJS` version property.
+- To enable the appcache in 'dev' the version should be changed to a numbered version. To do this run the `serve` command 
+with the 'version' argument, for example `brjs serve -v 1.2.3`. A timestamp will be appended to the 
+ version to ensure versions are unique. 
+  - The timestamp is calculated when the serve is started and will not
+ change on subsequent reloads. This is to ensure the version remains static in the manifest as browser's
+ will throw an exception is the manifest file changes while assets are being downloaded. To change the version
+ the server will need to be restarted for a new timestamp to be generated.
+- When building an app for production the version can be supplied via the 'version' argument, for example `brjs build-app foo -v 1.2.3`. 
+ As with the serve command a timestamp is also appended to this version. 
 
 ## Development
 
@@ -47,21 +41,12 @@ A plugin to enable [appcache](https://developer.mozilla.org/en/docs/HTML/Using_t
     brjsPath=BRJS_DIRECTORY
     ```
 
-    - Alternatively you can set the path by adding `-PbrjsPath=BRJS_DIRECTORY` to the command line arguments. This can be useful for things such as build scripts.
-
-> If you don't have a local BRJS install you can prefix any of the gradle build commands with the `getBrjs` task. This will download the latest version of BRJS from the [BRJS GitHub](https://github.com/BladeRunnerJS/brjs) `master` branch and use that version when running all following commands. You can also supply the `brjsVersion` gradle property to use a version other than `master`. The value of the `brjsVersion` property is passed straight into `git checkout` so can be any valid git identifier (e.g. commit hashes, branch names, tag names).
-
-> For example to test the plugin against BRJS tag `v0.9` you would run:
-
-> `./gradlew getBrjs test -PbrjsVersion=v0.9`
-
-> Note that as this tries to build BRJS from source, it's dependent on certain parts of the BRJS build and may not work with older versions of BRJS. You'll also need to ensure your PC meets the requirements for [building BRJS](https://github.com/BladeRunnerJS/brjs#brjs-core-toolkit-development).
+- Alternatively you can set the path by adding `-PbrjsPath=BRJS_DIRECTORY` to the command line arguments. This can be useful for things such as build scripts.
 
 ### Using Eclipse or IntelliJ IDEA 
 If you are using either Eclipse or IntelliJ IDEA for development, follow the instructions below to set up your project files
 
 - run `./gradlew eclipse` or `./gradlew idea`.
-    - For Eclipse the brjs-core source and JavaDocs will also be attached, for IntelliJ this must be done manually. The src jar can be found in `<brjs-dir>/docs/src/`.
 - Import the created project in to your IDE of choice.
     - This is generally done by selecting 'Import existing project'.
     - Once the project is imported the relevant dependencies should be added to the classpath for you.
@@ -69,14 +54,22 @@ If you are using either Eclipse or IntelliJ IDEA for development, follow the ins
 ### Build the plugin
 - Run `./gradlew build` to build and test your plugin.
 - Once the build has passed, your generated plugin JAR is placed in the project `build/lib` directory.
-- You can run `./gradlew copyToBrjs` to automatically build and copy your jar to the `apps/<your-app>/WEB-INF/lib` directories to be picked up by BRJS.
+- You can run `./gradlew copyToBrjs` to automatically build and copy your jar to the `conf/java` directory inside of BRJS.
+
+### Releasing
+The release process is very similar to the BRJS project.
+- Create a new annotated tag. It must be annotated as `git describe` which is used for version calulcation will only match annotated tags.
+- Run `gradle clean build` to generate the artifact which will be placed in `build/libs`
+- Push the tag using `git push <remote> <tagname`.
+- Manually create the release and upload the artifact via GitHub.
 
 ## BRJS Compatability
 Ensure you use the correct version of the plugin for your BRJS version:
 
 Plugin | BRJS
 -------|-----
-[2.0.0+](https://github.com/caplin/brjs-appcache/releases/latest) | 0.10+
+[3.x](https://github.com/BladeRunnerJS/brjs-appcache/releases/tag/latest) | 1.0+
+[2.x](https://github.com/BladeRunnerJS/brjs-appcache/releases/tag/2.1.0) | 0.10+
 Unsupported * | 0.9
 [1.0.2](https://github.com/caplin/brjs-appcache/releases/tag/1.0.2) | 0.6-0.8
 [1.0.1](https://github.com/caplin/brjs-appcache/releases/tag/1.0.1), [1.0.0](https://github.com/caplin/brjs-appcache/releases/tag/1.0.0) | 0.6-0.7

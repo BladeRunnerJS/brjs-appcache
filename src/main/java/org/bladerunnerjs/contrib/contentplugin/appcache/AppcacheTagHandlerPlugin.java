@@ -1,13 +1,15 @@
 package org.bladerunnerjs.contrib.contentplugin.appcache;
 
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.BundleSet;
+import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.api.BRJS;
+import org.bladerunnerjs.api.BundleSet;
+import org.bladerunnerjs.api.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.api.plugin.Locale;
+import org.bladerunnerjs.api.plugin.Plugin;
+import org.bladerunnerjs.api.plugin.RoutableContentPlugin;
+import org.bladerunnerjs.api.plugin.base.AbstractTagHandlerPlugin;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.plugin.Locale;
-import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
+import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 
 import java.io.IOException;
@@ -34,12 +36,11 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 		try
 		{
 			String requestType = (requestMode == RequestMode.Dev) ? "dev-appcache-request" : "prod-appcache-request";
-			if (isAppcacheEnabled(bundleSet.getBundlableNode(), requestMode))
+			if ( (!version.equals("dev") && version.length() > 0) || requestMode == RequestMode.Prod)
 			{
-				writer.write(".." + contentPathParser.createRequest(requestType));
-			}
-			else if (requestMode == RequestMode.Prod) {
-				return;
+				String request = contentPathParser.createRequest(requestType);
+				request = StringUtils.substringAfter(request, "/"); // strip the leading / as we want a path relative to the index page
+				writer.write( request );
 			}
 			else
 			{
@@ -58,23 +59,8 @@ public class AppcacheTagHandlerPlugin extends AbstractTagHandlerPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		this.contentPathParser = brjs.plugins().contentPlugin("appcache").getContentPathParser();
+		Plugin appCachePlugin = (VirtualProxyContentPlugin) brjs.plugins().contentPlugin("appcache");
+		this.contentPathParser = (appCachePlugin.castTo(RoutableContentPlugin.class)).getContentPathParser();
 	}
-
-	private boolean isAppcacheEnabled(BundlableNode node, RequestMode requestMode)
-	{
-        String version = null;
-        try {
-            AppcacheConf config = new AppcacheConf(node);
-            if (config != null)
-            {
-                version = config.getVersion(requestMode);
-            }
-        } catch (ConfigException e) {
-            e.printStackTrace();
-        }
-
-        return version != null;
-    }
 
 }

@@ -7,9 +7,24 @@ apply plugin: 'java'
 sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
 
+version = org.bladerunnerjs.BuildVersionCalculator.calculateVersion(project)
+group = 'org.bladerunnerjs.contrib'
+
+logger.info "Build version calculated as: ${version}"
+
+repositories {
+	mavenCentral()
+}
+
+if (!project.hasProperty("brjsPath")) {
+	throw new GradleException("The property 'brjsPath' must be set in gradle.properties")
+}
+
 dependencies {
 	compile fileTree(dir:brjsPath, include:"sdk/libs/java/system/*.jar")
-	testCompile fileTree(dir:"${projectDir}/libs", include:"*.jar")
+
+	testCompile 'org.mockito:mockito-core:1.9.0'
+	testCompile 'org.objenesis:objenesis:1.0'
 }
 
 test {
@@ -25,24 +40,7 @@ task copyToConf, type: Copy, dependsOn: jar, {
 	}
 }
 
-task copyToApps, type: Copy, dependsOn: jar, {
-	destinationDir file("${brjsPath}/apps")
-	file("${brjsPath}/apps").listFiles().each {
-		if (it.isDirectory()) {
-			into ("${it.name}/WEB-INF/lib") {
-				from jar.outputs.files.singleFile
-			}
-		}
-	}
-	doFirst {
-		fileTree(dir:"${brjsPath}/apps", include:"*/WEB-INF/lib/${project.name}.jar").each { delete it }
-	}
-	doLast {
-		println "${project.name} jar copied to ${brjsPath}/apps/*/WEB-INF/lib"
-	}
-}
-
-task copyToBrjs, dependsOn: [copyToConf, copyToApps], {
+task copyToBrjs, dependsOn: [copyToConf], {
 }
 
 // automatically add brjs-core sources jar for Eclipse classpath
