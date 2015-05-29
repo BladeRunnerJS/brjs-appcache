@@ -30,12 +30,21 @@ public class AppcacheTagHandlerPluginTests extends SpecTest
 	}
 
 	@Test
-	public void tagHasContentWithVersionGiven() throws Exception
+	public void tagHasDevContentWithVersionGiven() throws Exception
 	{
 		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
 			.and(brjs).hasVersion("1234");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en");
 		then(pageResponse).containsText("manifest='appcache/dev.appcache'");
+	}
+	
+	@Test
+	public void tagHasProdContentWithVersionGiven() throws Exception
+	{
+		given(aspect).indexPageHasContent("manifest='<@appcache.url@/>'")
+		.and(brjs).hasVersion("1234");
+		when(aspect).indexPageLoadedInProd(pageResponse, "en");
+		then(pageResponse).containsText("manifest='appcache/prod.appcache'");
 	}
 	
 	@Test

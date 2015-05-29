@@ -122,5 +122,15 @@ public class AppcacheContentPluginTests extends SpecTest
 		when(app).requestReceived("appcache/dev.appcache", pageResponse);
 		then(pageResponse).doesNotContainText("../v/");
 	}
+	
+	@Test
+	public void prodManifestContainsProdRequests() throws Exception
+	{
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
+            .and(brjs).hasVersion("1234");
+		when(app).requestReceived("appcache/prod.appcache", pageResponse);
+		then(pageResponse).containsLines("../v/1234/prodMock")
+			.and(pageResponse).doesNotContainText("../v/1234/compositeDev");
+	}
 
 }
