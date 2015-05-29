@@ -40,7 +40,7 @@ public class AppcacheContentPluginTests extends SpecTest
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
 			.and(brjs).hasVersion("1234");
 		when(app).requestReceived("appcache/dev.appcache", pageResponse);
-		then(pageResponse).containsText("# v1234\n");
+		then(pageResponse).containsText("# version 1234\n");
 	}
 	
 	@Test
@@ -49,7 +49,7 @@ public class AppcacheContentPluginTests extends SpecTest
 		given(app).hasBeenCreated().and(aspect).hasBeenCreated()
 			.and(brjs).hasVersion("");
 		when(app).requestReceived("appcache/dev.appcache", pageResponse);
-		then(pageResponse).containsText("# v\n");
+		then(pageResponse).containsText("# version \n");
 	}
 
 	@Test
