@@ -20,7 +20,7 @@ class BuildVersionCalculator
 		def stdout = new ByteArrayOutputStream()
 		def stderr = new ByteArrayOutputStream()
 		p.exec {
-			commandLine 'git', 'describe', '--abbrev=0'
+			commandLine 'git', 'describe', '--tags', '--abbrev=0'
 			standardOutput = stdout
 			errorOutput = stderr
 		}
@@ -40,7 +40,7 @@ class BuildVersionCalculator
 		try
 		{
 			p.exec {
-				commandLine 'git', 'describe', '--long', "--dirty=${DIRTY_TAG}"
+				commandLine 'git', 'describe', '--tags', '--long', "--dirty=${DIRTY_TAG}"
 				standardOutput = stdout
 				errorOutput = stderr
 			}
