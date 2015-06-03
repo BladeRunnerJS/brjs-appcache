@@ -61,7 +61,7 @@ public class AppcacheManifestBuilder
 	private void appendManifestHeader(StringBuilder manifest) throws PropertiesException
 	{
         manifest.append("CACHE MANIFEST\n");
-        manifest.append("# v" + version + "\n\n");
+        manifest.append("# version " + version + "\n\n");
 	}
 
 	private void appendManifestCacheFiles(StringBuilder manifest, RequestMode requestMode) throws ContentProcessingException, ConfigException, MalformedTokenException, PropertiesException {
